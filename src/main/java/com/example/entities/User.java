@@ -3,6 +3,9 @@ package com.example.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,13 +40,14 @@ public class User implements Serializable{
     private LANGUAGE language;
     private LEVEL initial_level;
 
-    //AJOUTER RELATION MANY TO MANY avec --> classes
-    // @ManyToMany(fetch = FetchType.LAZY,
-    //             mappedBy = "users")
-    // private List<User> users;
+    // Ajouter la relation MANY to MANY avec users
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    }, mappedBy = "users")
+    @JsonIgnore
+    private List<Course> courses;
 
     // Il faudra ajouter les validations
-
-
 
 }
