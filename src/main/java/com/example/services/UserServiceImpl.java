@@ -3,13 +3,14 @@ package com.example.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+
 
 import com.example.dao.UserDao;
 import com.example.entities.User;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     
     private final UserDao userDao;
