@@ -3,16 +3,22 @@ package com.example.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.format.annotation.NumberFormat;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,11 +39,25 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "Please enter your firstname.")
     private String firstName;
+
+    @NotBlank(message = "Please enter your surname.")
     private String surname;
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(value=0000001)
     private int global_id;
+    
+    @NotBlank(message= "Please enter your email.")
     private String email;
+
+    @Enumerated
+    @NotNull(message = "Please indicate the language you want to improve.")
     private LANGUAGE language;
+
+    @Enumerated
+    @NotNull(message = "Please indicate your current level.")
     private LEVEL initial_level;
 
     // Ajouter la relation MANY to MANY avec users
@@ -47,7 +67,5 @@ public class User implements Serializable {
     }, mappedBy = "users")
     @JsonIgnore
     private List<Course> courses;
-
-    // Il faudra ajouter les validations
 
 }
