@@ -7,7 +7,7 @@ import com.example.entities.User;
 public interface UserService {
 
     //Créer un participant
-    public User createUser(User user);
+    public User saveUser(User user);
 
     //Afficher un participant grace a son id
     public User findByUser(int idUser);
