@@ -34,6 +34,7 @@ public class LoadSampleData {
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.A)
                 .max_users(8)
+                // .users(null))
                 .build());
 
             courseService.saveCourse(Course.builder()
@@ -44,7 +45,7 @@ public class LoadSampleData {
                 .place("Teams")
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.B)
-                .max_users(8)
+                .max_users(4)
                 .build());
 
             courseService.saveCourse(Course.builder()
@@ -77,7 +78,7 @@ public class LoadSampleData {
                 .place("Teams")
                 .language(LANGUAGE.ENGLISH)
                 .level(LEVEL.NATIVE)
-                .max_users(8)
+                .max_users(4)
                 .build());
 
             courseService.saveCourse(Course.builder()
@@ -110,27 +111,26 @@ public class LoadSampleData {
                 .place("C.1")
                 .language(LANGUAGE.ENGLISH)
                 .level(LEVEL.C)
-                .max_users(8)
+                .max_users(5)
                 .build());
 
 
 
 
-        // Données du Course
+        // Données du Users
 
             userService.saveUser(User.builder()
                 .firstName("Daniela")
                 .surname("Popa")
-                //.global_id(0)
                 .email("danipopa@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.A)
+                // .courses(null)
                 .build());
 
             userService.saveUser(User.builder()
                 .firstName("Clementine")
                 .surname("Mory")
-                //.global_id(0)
                 .email("clemmory@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.A)
@@ -139,7 +139,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Oumayma")
                 .surname("Bombarek ")
-                //.global_id(0)
                 .email("OmyBom@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.B)
@@ -148,7 +147,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Celia")
                 .surname("Luque")
-                //.global_id(0)
                 .email("celilu@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.B)
@@ -157,7 +155,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Isabel")
                 .surname("Álvarez")
-                //.global_id(0)
                 .email("isaalva@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.NATIVE)
@@ -166,7 +163,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Rosa")
                 .surname("Montero")
-                //.global_id(0)
                 .email("rosamonte@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.NATIVE)
@@ -175,7 +171,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Pilar")
                 .surname("Colomer")
-                //.global_id(0)
                 .email("pilacolo@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.C)
@@ -184,7 +179,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Gabriela")
                 .surname("García")
-                //.global_id(0)
                 .email("gabigarci@blueclub.com")
                 .language(LANGUAGE.FRENCH)
                 .initial_level(LEVEL.C)
@@ -193,7 +187,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Andrea")
                 .surname("Serge")
-                //.global_id(0)
                 .email("andreser@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.NATIVE)
@@ -202,7 +195,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Constanza")
                 .surname("Arnau")
-                //.global_id(0)
                 .email("cotyarny@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.NATIVE)
@@ -211,7 +203,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Victor")
                 .surname("Machado")
-                //.global_id(0)
                 .email("victomacha@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.B)
@@ -220,7 +211,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Pablo")
                 .surname("Collazos")
-                //.global_id(0)
                 .email("pablocolla@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.B)
@@ -229,7 +219,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Raul")
                 .surname("LLibrer")
-                //.global_id(0)
                 .email("raullia@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.NO_LEVEL)
@@ -238,7 +227,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Daniel")
                 .surname("Román")
-                //.global_id(0)
                 .email("daniroma@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.NO_LEVEL)
@@ -247,7 +235,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Carla")
                 .surname("Sánchez")
-                //.global_id(0)
                 .email("carsan@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.C)
@@ -256,7 +243,6 @@ public class LoadSampleData {
             userService.saveUser(User.builder()
                 .firstName("Susana")
                 .surname("Lagarde")
-                //.global_id(0)
                 .email("suslagar@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
                 .initial_level(LEVEL.C)
