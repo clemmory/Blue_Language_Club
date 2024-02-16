@@ -24,226 +24,147 @@ public class LoadSampleData {
 
         return datos -> {
 
-            // Données du Users
+            // Données des participants
 
-            userService.saveUser(User.builder()
+            User user1 = User.builder()
                     .firstName("Daniela")
                     .surname("Popa")
                     .email("danipopa@blueclub.com")
                     .language(LANGUAGE.FRENCH)
                     .initial_level(LEVEL.A)
-                    .build());
+                    .build();
 
-            userService.saveUser(User.builder()
+            User user2 = User.builder()
+                    .firstName("Rosa")
+                    .surname("Montero")
+                    .email("danipopa@blueclub.com")
+                    .language(LANGUAGE.FRENCH)
+                    .initial_level(LEVEL.C)
+                    .build();
+
+            User user3 = User.builder()
                     .firstName("Clementine")
                     .surname("Mory")
                     .email("clemmory@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.A)
-                    .build());
+                    .language(LANGUAGE.ENGLISH)
+                    .initial_level(LEVEL.B)
+                    .build();
 
-            userService.saveUser(User.builder()
+            User user4 = User.builder()
                     .firstName("Oumayma")
                     .surname("Bombarek ")
                     .email("OmyBom@blueclub.com")
                     .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.B)
-                    .build());
+                    .initial_level(LEVEL.A)
+                    .build();
 
-            userService.saveUser(User.builder()
+            User user5 = User.builder()
                     .firstName("Celia")
                     .surname("Luque")
                     .email("celilu@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.B)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Isabel")
-                    .surname("Álvarez")
-                    .email("isaalva@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.NATIVE)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Rosa")
-                    .surname("Montero")
-                    .email("rosamonte@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.NATIVE)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Pilar")
-                    .surname("Colomer")
-                    .email("pilacolo@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.C)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Gabriela")
-                    .surname("García")
-                    .email("gabigarci@blueclub.com")
-                    .language(LANGUAGE.FRENCH)
-                    .initial_level(LEVEL.C)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Andrea")
-                    .surname("Serge")
-                    .email("andreser@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.NATIVE)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Constanza")
-                    .surname("Arnau")
-                    .email("cotyarny@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.NATIVE)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Victor")
-                    .surname("Machado")
-                    .email("victomacha@blueclub.com")
                     .language(LANGUAGE.ENGLISH)
                     .initial_level(LEVEL.B)
-                    .build());
+                    .build();
+            
+            userService.saveUser(user1);
+            userService.saveUser(user2);
+            userService.saveUser(user3);
+            userService.saveUser(user4);
+            userService.saveUser(user5);
 
-            userService.saveUser(User.builder()
-                    .firstName("Pablo")
-                    .surname("Collazos")
-                    .email("pablocolla@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.B)
-                    .build());
 
-            userService.saveUser(User.builder()
-                    .firstName("Raul")
-                    .surname("LLibrer")
-                    .email("raullia@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.NO_LEVEL)
-                    .build());
+            // Données des cours
 
-            userService.saveUser(User.builder()
-                    .firstName("Daniel")
-                    .surname("Román")
-                    .email("daniroma@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.NO_LEVEL)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Carla")
-                    .surname("Sánchez")
-                    .email("carsan@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.C)
-                    .build());
-
-            userService.saveUser(User.builder()
-                    .firstName("Susana")
-                    .surname("Lagarde")
-                    .email("suslagar@blueclub.com")
-                    .language(LANGUAGE.ENGLISH)
-                    .initial_level(LEVEL.C)
-                    .build());
-
-            // Données du Course
-
-            courseService.saveCourse(Course.builder()
+            Course course1 = Course.builder()
                     .title("Français - niveau A")
                     .date(LocalDate.of(2024, Month.APRIL, 22))
-                    .time(LocalTime.of(11, 30))
+                    .time(LocalTime.of(12, 30))
                     .mode(MODE.PRESENTIAL)
                     .place("C.2")
                     .language(LANGUAGE.FRENCH)
                     .level(LEVEL.A)
                     .max_users(8)
-                    .users(List.of(userService.findByUser(1), userService.findByUser(2)))
-                    .build());
+                    .build();
 
-            courseService.saveCourse(Course.builder()
-                    .title("Français - niveau B")
-                    .date(LocalDate.of(2024, Month.APRIL, 26))
-                    .time(LocalTime.of(17, 00))
+            Course course2 = Course.builder()
+                    .title("Français - niveau A")
+                    .date(LocalDate.of(2024, Month.APRIL, 24))
+                    .time(LocalTime.of(11, 30))
                     .mode(MODE.ONLINE)
                     .place("Teams")
                     .language(LANGUAGE.FRENCH)
-                    .level(LEVEL.B)
-                    .max_users(4)
-                    .build());
+                    .level(LEVEL.A)
+                    .max_users(8)
+                    .build();
 
-            courseService.saveCourse(Course.builder()
-                    .title("Français - niveau native")
-                    .date(LocalDate.of(2024, Month.MAY, 13))
-                    .time(LocalTime.of(11, 00))
+            courseService.saveCourse(course1);
+            courseService.saveCourse(course2);
+
+            user1.setCourses(List.of(course1,course2));
+            user4.setCourses(List.of(course1,course2));
+            course1.setUsers(List.of(user1, user4));
+            course2.setUsers(List.of(user1, user4));
+
+            
+
+            Course course3 = Course.builder()
+                    .title("Anglais - niveau B")
+                    .date(LocalDate.of(2024, Month.APRIL, 26))
+                    .time(LocalTime.of(9, 00))
                     .mode(MODE.PRESENTIAL)
                     .place("C.2")
-                    .language(LANGUAGE.FRENCH)
-                    .level(LEVEL.NATIVE)
-                    .max_users(8)
-                    .build());
+                    .language(LANGUAGE.ENGLISH)
+                    .level(LEVEL.B)
+                    .max_users(4)
+                    .build();
 
-            courseService.saveCourse(Course.builder()
+            Course course4 = Course.builder()
+                    .title("Anglais - niveau B")
+                    .date(LocalDate.of(2024, Month.MAY, 13))
+                    .time(LocalTime.of(10, 00))
+                    .mode(MODE.ONLINE)
+                    .place("Teams")
+                    .language(LANGUAGE.ENGLISH)
+                    .level(LEVEL.B)
+                    .max_users(4)
+                    .build();
+
+            courseService.saveCourse(course3);
+            courseService.saveCourse(course4);
+        
+            user3.setCourses(List.of(course3,course4));
+            user5.setCourses(List.of(course3,course4));
+            course3.setUsers(List.of(user3, user5));
+            course4.setUsers(List.of(user3, user5));
+
+            Course course5 = Course.builder()
                     .title("Français - niveau C")
                     .date(LocalDate.of(2024, Month.MAY, 20))
                     .time(LocalTime.of(17, 00))
+                    .mode(MODE.PRESENTIAL)
+                    .place("C.2")
+                    .language(LANGUAGE.FRENCH)
+                    .level(LEVEL.C)
+                    .max_users(8)
+                    .build();
+
+            Course course6 = Course.builder()
+                    .title("Français - niveau C")
+                    .date(LocalDate.of(2024, Month.MAY, 20))
+                    .time(LocalTime.of(15, 00))
                     .mode(MODE.ONLINE)
                     .place("Teams")
                     .language(LANGUAGE.FRENCH)
                     .level(LEVEL.C)
                     .max_users(8)
-                    .build());
+                    .build();
 
-            courseService.saveCourse(Course.builder()
-                    .title("English - Level for native")
-                    .date(LocalDate.of(2024, Month.MAY, 26))
-                    .time(LocalTime.of(11, 00))
-                    .mode(MODE.ONLINE)
-                    .place("Teams")
-                    .language(LANGUAGE.ENGLISH)
-                    .level(LEVEL.NATIVE)
-                    .max_users(4)
-                    .build());
-
-            courseService.saveCourse(Course.builder()
-                    .title("English - Level B")
-                    .date(LocalDate.of(2024, Month.MAY, 03))
-                    .time(LocalTime.of(9, 00))
-                    .mode(MODE.PRESENTIAL)
-                    .place("C.1")
-                    .language(LANGUAGE.ENGLISH)
-                    .level(LEVEL.B)
-                    .max_users(8)
-                    .build());
-
-            courseService.saveCourse(Course.builder()
-                    .title("English - Beginners")
-                    .date(LocalDate.of(2024, Month.APRIL, 22))
-                    .time(LocalTime.of(9, 00))
-                    .mode(MODE.ONLINE)
-                    .place("Teams")
-                    .language(LANGUAGE.ENGLISH)
-                    .level(LEVEL.NO_LEVEL)
-                    .max_users(8)
-                    .build());
-
-            courseService.saveCourse(Course.builder()
-                    .title("English - Level C")
-                    .date(LocalDate.of(2024, Month.APRIL, 18))
-                    .time(LocalTime.of(17, 00))
-                    .mode(MODE.PRESENTIAL)
-                    .place("C.1")
-                    .language(LANGUAGE.ENGLISH)
-                    .level(LEVEL.C)
-                    .max_users(5)
-                    .build());
+            courseService.saveCourse(course5);
+            courseService.saveCourse(course6);
+        
+            user2.setCourses(List.of(course5,course6));
+            course5.setUsers(List.of(user2));
+            course6.setUsers(List.of(user2));
 
         };
 

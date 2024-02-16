@@ -42,7 +42,6 @@ public class User implements Serializable {
     @NotBlank(message = "Please enter your surname.")
     private String surname;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int global_id;
     
     private String email;
