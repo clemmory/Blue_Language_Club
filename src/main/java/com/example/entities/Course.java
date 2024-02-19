@@ -3,8 +3,10 @@ package com.example.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -37,7 +39,11 @@ public class Course implements Serializable {
     private int id;
 
     private String title;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
     private MODE mode;
     private String place;
