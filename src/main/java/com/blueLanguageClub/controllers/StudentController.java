@@ -87,6 +87,14 @@ public class StudentController {
     //     Map<String, Object> responseAsMap = new HashMap<>();
     //     ResponseEntity <Map<String,Object>> responseEntity = null;
 
+    //     try {
+    //         Student student = studentService.findByStudent(globalId);
+            
+            
+    //     } catch (Exception e) {
+    //         // TODO: handle exception
+    //     }
+
 
 
     //     return null;
