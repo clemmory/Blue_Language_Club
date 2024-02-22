@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.blueLanguageClub.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -60,7 +60,7 @@ public class Course implements Serializable {
     @JoinTable(name = "user_courses", joinColumns = { 
         @JoinColumn(name = "course_id") }, inverseJoinColumns = {
             @JoinColumn(name = "user_id") })
-    private List<User> users;
+    private List<Student> users;
 
 
     // Il faudra ajouter les validations

@@ -1,4 +1,4 @@
-package com.example.helpers;
+package com.blueLanguageClub.helpers;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,53 +9,53 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.entities.Course;
-import com.example.entities.LANGUAGE;
-import com.example.entities.LEVEL;
-import com.example.entities.MODE;
-import com.example.entities.User;
-import com.example.services.CourseService;
-import com.example.services.UserService;
+import com.blueLanguageClub.entities.Course;
+import com.blueLanguageClub.entities.LANGUAGE;
+import com.blueLanguageClub.entities.LEVEL;
+import com.blueLanguageClub.entities.MODE;
+import com.blueLanguageClub.entities.Student;
+import com.blueLanguageClub.services.CourseService;
+import com.blueLanguageClub.services.StudentService;
 
 @Configuration
 public class LoadSampleData {
     @Bean
-    public CommandLineRunner saveSampleData(CourseService courseService, UserService userService) {
+    public CommandLineRunner saveSampleData(CourseService courseService, StudentService userService) {
 
         return datos -> {
 
         // Données du Users
 
-            User user1 = User.builder()
+            Student user1 = Student.builder()
                 .firstName("Daniela")
                 .surname("Popa")
                 .email("danipopa@blueclub.com")
                 .language(LANGUAGE.FRENCH)
-                .initial_level(LEVEL.A)
+                .initialLevel(LEVEL.A)
                 .build();
 
-            User user2 = User.builder()
+            Student user2 = Student.builder()
                 .firstName("Clem")
                 .surname("Mory")
                 .email("clemory@blueclub.com")
                 .language(LANGUAGE.FRENCH)
-                .initial_level(LEVEL.B)
+                .initialLevel(LEVEL.B)
                 .build();
                 
-            User user3 = User.builder()
+            Student user3 = Student.builder()
                 .firstName("Rosa")
                 .surname("Montero")
                 .email("rosamonte@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
-                .initial_level(LEVEL.B)
+                .initialLevel(LEVEL.B)
                 .build();
                 
-            User user4 = User.builder()
+            Student user4 = Student.builder()
                 .firstName("Victor")
                 .surname("Machado")
                 .email("victomacha@blueclub.com")
                 .language(LANGUAGE.ENGLISH)
-                .initial_level(LEVEL.NO_LEVEL)
+                .initialLevel(LEVEL.NO_LEVEL)
                 .build();
 
 

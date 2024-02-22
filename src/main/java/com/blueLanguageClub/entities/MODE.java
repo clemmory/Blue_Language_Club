@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.blueLanguageClub.entities;
 
 public enum MODE {
 
