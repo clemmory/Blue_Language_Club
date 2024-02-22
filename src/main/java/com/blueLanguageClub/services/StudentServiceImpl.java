@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.blueLanguageClub.dao.UserDao;
+import com.blueLanguageClub.dao.StudentDao;
 import com.blueLanguageClub.entities.Student;
 
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     
-    private final UserDao studentDao;
+    private final StudentDao studentDao;
     
     @Override
     public Student saveStudent(Student student) {

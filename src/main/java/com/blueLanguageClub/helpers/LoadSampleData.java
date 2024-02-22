@@ -20,13 +20,13 @@ import com.blueLanguageClub.services.StudentService;
 @Configuration
 public class LoadSampleData {
     @Bean
-    public CommandLineRunner saveSampleData(CourseService courseService, StudentService userService) {
+    public CommandLineRunner saveSampleData(CourseService courseService, StudentService studentService) {
 
         return datos -> {
 
         // Données du Users
 
-            Student user1 = Student.builder()
+            Student student1 = Student.builder()
                 .firstName("Daniela")
                 .surname("Popa")
                 .email("danipopa@blueclub.com")
@@ -34,7 +34,7 @@ public class LoadSampleData {
                 .initialLevel(LEVEL.A)
                 .build();
 
-            Student user2 = Student.builder()
+            Student student2 = Student.builder()
                 .firstName("Clem")
                 .surname("Mory")
                 .email("clemory@blueclub.com")
@@ -42,7 +42,7 @@ public class LoadSampleData {
                 .initialLevel(LEVEL.B)
                 .build();
                 
-            Student user3 = Student.builder()
+            Student student3 = Student.builder()
                 .firstName("Rosa")
                 .surname("Montero")
                 .email("rosamonte@blueclub.com")
@@ -50,7 +50,7 @@ public class LoadSampleData {
                 .initialLevel(LEVEL.B)
                 .build();
                 
-            Student user4 = Student.builder()
+            Student student4 = Student.builder()
                 .firstName("Victor")
                 .surname("Machado")
                 .email("victomacha@blueclub.com")
@@ -69,8 +69,8 @@ public class LoadSampleData {
                 .place("C.2")
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.A)
-                .max_users(8)
-                .users(List.of(user1, user2))
+                .max_students(8)
+                .students(List.of(student1, student2))
                 .build());
 
             courseService.saveCourse(Course.builder()
@@ -81,15 +81,15 @@ public class LoadSampleData {
                 .place("Teams")
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.A)
-                .max_users(8)
-                .users(List.of(user3, user4))
+                .max_students(8)
+                .students(List.of(student3, student4))
                 .build());
 
 
-            user1.setCourses(List.of(courseService.findByIdCourse(1)));
-            user2.setCourses(List.of(courseService.findByIdCourse(1)));
-            user3.setCourses(List.of(courseService.findByIdCourse(2)));
-            user4.setCourses(List.of(courseService.findByIdCourse(2)));
+            student1.setCourses(List.of(courseService.findByIdCourse(1)));
+            student2.setCourses(List.of(courseService.findByIdCourse(1)));
+            student3.setCourses(List.of(courseService.findByIdCourse(2)));
+            student4.setCourses(List.of(courseService.findByIdCourse(2)));
 
         
 

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.blueLanguageClub.entities.Student;
 
 @Repository
-public interface UserDao extends JpaRepository<Student, Integer> {
+public interface StudentDao extends JpaRepository<Student, Integer> {
 
 }
