@@ -1,88 +1,88 @@
-// package com.example.controllers;
+package com.example.controllers;
 
-// import java.util.ArrayList;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-// import org.springframework.dao.DataAccessException;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.transaction.annotation.Transactional;
-// import org.springframework.validation.BindingResult;
-// import org.springframework.validation.ObjectError;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// import com.example.entities.Course;
-// import com.example.entities.User;
-// import com.example.services.CourseService;
-// import com.example.services.UserService;
+import com.example.entities.Course;
+import com.example.services.CourseService;
 
-// import jakarta.validation.Valid;
 
-// @RestController
-// @RequestMapping("/courses")
-// public class CourseController {
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-// //     private final CourseService courseService;
+@RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+public class CourseController {
 
-// //     //Enregistrer un curs
-// //     @PostMapping
-// //     @Transactional
-// //     public ResponseEntity<Map<String, Object>> saveCourse(
-// //             @Valid @RequestBody Course course, BindingResult validationResults) {
+    private final CourseService courseService;
 
-// //         Map<String, Object> responseAsMap = new HashMap<>();
-// //         ResponseEntity<Map<String, Object>> responseEntity = null;
+    //Affficher tous les cours 
+    @GetMapping("/courses")
+   
+    
+     public ResponseEntity<List<Course>> findAllCourses() {
 
-// //         // Vérifier si l'objet curs comporte des erreurs
-// //         if (validationResults.hasErrors()) {
-// //             List<String> errorsList = new ArrayList<>();
+        List<Course> courses = courseService.findAllCourses();
 
-// //             List<ObjectError> objectErrors = validationResults.getAllErrors();
-// //             objectErrors.forEach(objectError -> errorsList.add(objectError.getDefaultMessage()));
+        return new ResponseEntity<>(courses, HttpStatus.OK);
+    
+}
 
-// //             responseAsMap.put("error", errorsList);
-// //             responseAsMap.put("Incorrect course", course);
+    //Enregistrer un curs
+    @PostMapping("/courses")
+    @Transactional
+    public ResponseEntity<Map<String, Object>> saveCourse(
+            @Valid @RequestBody Course course, BindingResult validationResults) {
 
-// //             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
 
-// //             return responseEntity;
-// //         }
-// //         try {
-// //             Course savedCourse = courseService.saveCourse(course);
-// //             String successMessage = "The course has been added successfully.";
-// //             responseAsMap.put("Success message", successMessage);
-// //             responseAsMap.put("Saved course", savedCourse);
-// //             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
-// //         } catch (DataAccessException e) {
-// //             String error = "Failed to add new user " + e.getMostSpecificCause();
-// //             responseAsMap.put("error", error);
-// //             responseAsMap.put("Course not saved", course);
-// //             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
-// //         }
+        // Vérifier si l'objet curs comporte des erreurs
+        if (validationResults.hasErrors()) {
+            List<String> errorsList = new ArrayList<>();
 
-// //         return responseEntity;
+            List<ObjectError> objectErrors = validationResults.getAllErrors();
+            objectErrors.forEach(objectError -> errorsList.add(objectError.getDefaultMessage()));
 
-// //     }
+            responseAsMap.put("error", errorsList);
+            responseAsMap.put("Incorrect course", course);
 
-// //     //Afficher tous les curses
-// //     @GetMapping
-// //     public ResponseEntity<List<Course>> findAllCourses(){
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
 
-// //         ResponseEntity<List<Course>> responseEntity = null;
+            return responseEntity;
+        }
+        try {
+            Course savedCourse = courseService.saveCourse(course);
+            String successMessage = "The course has been added successfully.";
+            responseAsMap.put("Success message", successMessage);
+            responseAsMap.put("Saved course", savedCourse);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
+        } catch (DataAccessException e) {
+            String error = "Failed to add new user " + e.getMostSpecificCause();
+            responseAsMap.put("error", error);
+            responseAsMap.put("Course not saved", course);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-// //         List<Course> courses = courseService.findAllCourses();
-// //         responseEntity = new ResponseEntity<List<Course>>(courses,HttpStatus.OK);
+        return responseEntity;
 
-// //         return responseEntity;
-// //     }
+    }
 
-//  }
-
+}
 
 
