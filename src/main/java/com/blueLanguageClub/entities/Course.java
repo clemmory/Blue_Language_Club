@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.blueLanguageClub.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -49,7 +49,7 @@ public class Course implements Serializable {
     private String place;
     private LANGUAGE language;
     private LEVEL level;
-    private int max_users;
+    private int max_students;
 
     // Ajouter la relation MANY to MANY avec users
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
@@ -57,10 +57,10 @@ public class Course implements Serializable {
             CascadeType.MERGE
     })
 
-    @JoinTable(name = "user_courses", joinColumns = { 
+    @JoinTable(name = "students_courses", joinColumns = { 
         @JoinColumn(name = "course_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "user_id") })
-    private List<User> users;
+            @JoinColumn(name = "student_id") })
+    private List<Student> students;
 
 
     // Il faudra ajouter les validations

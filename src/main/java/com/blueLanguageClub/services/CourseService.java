@@ -1,8 +1,8 @@
-package com.example.services;
+package com.blueLanguageClub.services;
 
 import java.util.List;
 
-import com.example.entities.Course;
+import com.blueLanguageClub.entities.Course;
 
 public interface CourseService {
 

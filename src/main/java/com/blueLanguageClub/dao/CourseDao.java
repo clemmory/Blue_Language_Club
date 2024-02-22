@@ -1,9 +1,9 @@
-package com.example.dao;
+package com.blueLanguageClub.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.entities.Course;
+import com.blueLanguageClub.entities.Course;
 
 @Repository
 public interface CourseDao extends JpaRepository<Course, Integer> {

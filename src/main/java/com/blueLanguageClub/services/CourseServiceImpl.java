@@ -1,10 +1,10 @@
-package com.example.services;
+package com.blueLanguageClub.services;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 
-import com.example.dao.CourseDao;
-import com.example.entities.Course;
+import com.blueLanguageClub.dao.CourseDao;
+import com.blueLanguageClub.entities.Course;
 
 import lombok.RequiredArgsConstructor;
 
