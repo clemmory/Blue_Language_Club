@@ -1,4 +1,4 @@
-package com.example.controllers;
+package com.blueLanguageClub.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.entities.Course;
-import com.example.services.CourseService;
+import com.blueLanguageClub.entities.Course;
+import com.blueLanguageClub.services.CourseService;
 
 import lombok.RequiredArgsConstructor;
 
