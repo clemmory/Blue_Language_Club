@@ -1,4 +1,4 @@
-package com.example.controllers;
+package com.blueLanguageClub.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,29 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.entities.User;
-import com.example.services.UserService;
+import com.example.entities.Course;
+import com.example.services.CourseService;
+
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserController {
+public class CourseController {
 
-    private final UserService userService;
+    private final CourseService courseService;
 
-    //Enregistrer un user 
-    @PostMapping
+    //Affficher tous les cours 
+    @GetMapping("/courses")
+   
+    
+     public ResponseEntity<List<Course>> findAllCourses() {
+
+        List<Course> courses = courseService.findAllCourses();
+
+        return new ResponseEntity<>(courses, HttpStatus.OK);
+    
+}
+
+    //Enregistrer un curs
+    @PostMapping("/courses")
     @Transactional
-    public ResponseEntity<Map<String, Object>> saveUser(
-            @Valid @RequestBody User user, BindingResult validationResults) {
+    public ResponseEntity<Map<String, Object>> saveCourse(
+            @Valid @RequestBody Course course, BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
-        // Vérifier si l'objet user comporte des erreurs
+        // Vérifier si l'objet curs comporte des erreurs
         if (validationResults.hasErrors()) {
             List<String> errorsList = new ArrayList<>();
 
@@ -47,22 +60,22 @@ public class UserController {
             objectErrors.forEach(objectError -> errorsList.add(objectError.getDefaultMessage()));
 
             responseAsMap.put("error", errorsList);
-            responseAsMap.put("User incorrect", user);
+            responseAsMap.put("Incorrect course", course);
 
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
 
             return responseEntity;
         }
         try {
-            User savedUser = userService.saveUser(user);
-            String successMessage = "The user has been added successfully.";
+            Course savedCourse = courseService.saveCourse(course);
+            String successMessage = "The course has been added successfully.";
             responseAsMap.put("Success message", successMessage);
-            responseAsMap.put("Saved user", savedUser);
+            responseAsMap.put("Saved course", savedCourse);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
         } catch (DataAccessException e) {
             String error = "Failed to add new user " + e.getMostSpecificCause();
             responseAsMap.put("error", error);
-            responseAsMap.put("User not saved", user);
+            responseAsMap.put("Course not saved", course);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -70,16 +83,6 @@ public class UserController {
 
     }
 
-    //Afficher tous les users
-    @GetMapping
-    public ResponseEntity<List<User>> findAllUsers(){
-
-        ResponseEntity<List<User>> responseEntity = null;
-
-        List<User> users = userService.findAllUsers();
-        responseEntity = new ResponseEntity<List<User>>(users,HttpStatus.OK);
-
-        return responseEntity;
-    }
-
 }
+
+

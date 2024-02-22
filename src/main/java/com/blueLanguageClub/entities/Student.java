@@ -1,12 +1,15 @@
-package com.example.entities;
+package com.blueLanguageClub.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -21,17 +24,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "users")
-@Data
+@Table(name = "students")
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class User implements Serializable {
+public class Student implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,8 +52,8 @@ public class User implements Serializable {
     @Pattern(regexp = "^[A-Za-z\s-]+$")
     private String surname;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)   
-    private int global_id;
+    @Column(name = "global_id")
+    private long globalId;
     
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@blueclub.com")
     @Email
@@ -59,16 +64,18 @@ public class User implements Serializable {
     @NotNull(message = "Please indicate the language you want to improve.")
     private LANGUAGE language;
 
+    @Column(name = "initial_level")
     @Enumerated
     @NotNull(message = "Please indicate your current level.")
-    private LEVEL initial_level;
+    private LEVEL initialLevel;
 
-    // Ajouter la relation MANY to MANY avec users
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
-    }, mappedBy = "users")
+    }, mappedBy = "students")
     @JsonIgnore
     private List<Course> courses;
+    //Changer pour SET (aussi dans datos de muestras)
+
 
 }
