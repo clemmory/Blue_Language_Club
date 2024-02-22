@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -79,24 +77,5 @@ public class Student implements Serializable {
     private List<Course> courses;
     //Changer pour SET (aussi dans datos de muestras)
 
-
-    //Generate Global_id
-    @Transient // Mark as transient to avoid persistence
-    private static long globalIdCounter = 0;
-
-    @Autowired
-    @Transient // Mark as transient to avoid persistence
-    private EntityManager entityManager;
-
-    public long generateGlobalId(){
-        if (globalIdCounter == 0) {
-            // Fetch the current maximum global id from the database
-            Long maxGlobalId = entityManager.createQuery("SELECT MAX(u.globalId) FROM User u", Long.class).getSingleResult();
-            globalIdCounter = maxGlobalId != null ? maxGlobalId + 1 : 1;
-        }
-        
-        this.globalId = globalIdCounter++;
-        return this.globalId;
-    }
 
 }

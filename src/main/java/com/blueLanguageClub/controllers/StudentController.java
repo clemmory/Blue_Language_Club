@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class StudentController {
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
-        // Vérifier si l'objet student comporte des erreurs
+        // Vérifier si l'objet student comporte des erreurs @Validation
         if (validationResults.hasErrors()) {
             List<String> errorsList = new ArrayList<>();
 
@@ -48,22 +49,23 @@ public class StudentController {
             responseAsMap.put("error", errorsList);
             responseAsMap.put("Incorrect Student", student);
 
+            //Réponse en cas d'erreur de validation
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
 
             return responseEntity;
         }
         try {
-            long globalId = student.generateGlobalId();
-            student.setGlobalId(globalId);
             Student savedStudent = studentService.saveStudent(student);
             String successMessage = "The student has been added successfully.";
             responseAsMap.put("Success message", successMessage);
-            responseAsMap.put("Saved student", savedStudent);
+            responseAsMap.put("Saved student:", savedStudent);
+
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
         } catch (DataAccessException e) {
             String error = "Failed to add new student " + e.getMostSpecificCause();
             responseAsMap.put("error", error);
             responseAsMap.put("student not saved", student);
+
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -71,13 +73,29 @@ public class StudentController {
 
     }
 
-    //GET Afficher tous les étudiants {/api/students}
-    @GetMapping
+    //GET Afficher tous les étudiants {/api/students} - OK
+    @GetMapping("/students")
     public ResponseEntity<List<Student>> findAllStudents(){
-
         List<Student> students = studentService.findAllStudents();
-
         return new ResponseEntity<>(students,HttpStatus.OK);
     }
+
+    //GET Afficher un étudiant par globalId {/api/students/{globalId}}
+    // @GetMapping("/students/{globalId}")
+    // public ResponseEntity<Map<String, Object>> findStudentByGlobalId(@PathVariable (value = "globalId", required = true) long globalId) {
+        
+    //     Map<String, Object> responseAsMap = new HashMap<>();
+    //     ResponseEntity <Map<String,Object>> responseEntity = null;
+
+
+
+    //     return null;
+    // }
+    
+    
+    
+    
+    //PUT Modifier un étudiant en utilisant son global_id
+    //DELETE Supprimer un étudiant en utilisant son global_id
 
 }
