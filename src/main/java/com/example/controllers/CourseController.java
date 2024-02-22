@@ -1,5 +1,7 @@
 package com.example.controllers;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.entities.Course;
 import com.example.services.CourseService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,10 +33,20 @@ private final CourseService courseService;
 
         try {
 
-            courseService.deleteCourse(courseService.findByIdCourse(idCourse));
-            String successMessage = "The course with id " + idCourse + " has been deleted.";
-            responseAsMap.put("successMessage", successMessage);
-            responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
+            Course course = courseService.findByIdCourse(idCourse);
+            LocalDate today = LocalDate.now();
+            LocalTime now = LocalTime.now();
+
+            if (course.getDate().isBefore(today) && course.getTime().isBefore(now)) {
+                String errorMessage = "You can't delete this course because it has already ended";
+                responseAsMap.put("errorMessage", errorMessage);
+                responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
+            } else {
+                courseService.deleteById(idCourse);
+                String successMessage = "The course with id " + idCourse + " has been deleted.";
+                responseAsMap.put("successMessage", successMessage);
+                responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
+            }            
 
         } catch (DataAccessException e) {
 

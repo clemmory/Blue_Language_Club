@@ -14,6 +14,8 @@ public interface CourseService {
     public List<Course> findAllCourses();
     //Afficher un cours par Id
     public Course findByIdCourse(int id);
+
+    public void deleteById(int id);
     
     
 

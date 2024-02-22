@@ -34,6 +34,11 @@ import lombok.RequiredArgsConstructor;
     public Course findByIdCourse(int id) {
         return courseDao.findById(id).get();
     }
+
+    @Override
+    public void deleteById(int id) {
+      courseDao.deleteById(id);
+    }
     
 
  }
