@@ -2,9 +2,6 @@ package com.blueLanguageClub.entities;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

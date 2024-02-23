@@ -1,7 +1,6 @@
 package com.blueLanguageClub.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.blueLanguageClub.entities.Student;
 
@@ -13,13 +12,14 @@ public interface StudentService {
     //Afficher un participant grace a son id
     public Student findByStudent(int idStudent);
 
-    //Supprimer un participant
-    public void deleteStudent(Student student);
+    //Supprimer un participant avec son globalId
+    public void deleteStudentByGlobalId(long globalId);
 
     //Afficher tous les participants
     public List<Student> findAllStudents();
 
     //Afficher un étudiant grâce à son globalId
-    public Optional findStudentByGlobalId(long global_id);
+    public Student findStudentByGlobalId(long globalId);
+
 
 }

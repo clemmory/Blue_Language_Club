@@ -29,19 +29,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Student student) {
-        studentDao.delete(student);
-
-    }
-
-    @Override
     public List<Student> findAllStudents() {
         return studentDao.findAll();
     }
 
     @Override
-    public Optional findStudentByGlobalId(long global_id) {
-        return studentDao.findStudentByGlobalId(global_id);
+    public Student findStudentByGlobalId(long globalId) {
+        return studentDao.findStudentByGlobalId(globalId);
+    }
+
+    @Override
+    public void deleteStudentByGlobalId(long globalId) {
+        studentDao.deleteStudentByGlobalId(globalId);
     }
 
 }

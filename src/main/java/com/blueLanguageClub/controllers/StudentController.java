@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +32,11 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    //POST - Enregistrer un étudiant {/api/students}
+    // POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
     @Transactional
-    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student, BindingResult validationResults) {
+    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student,
+            BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -49,7 +51,7 @@ public class StudentController {
             responseAsMap.put("error", errorsList);
             responseAsMap.put("Incorrect Student", student);
 
-            //Réponse en cas d'erreur de validation
+            // Réponse en cas d'erreur de validation
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
 
             return responseEntity;
@@ -68,42 +70,122 @@ public class StudentController {
 
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return responseEntity;
+    }
+
+    // GET Afficher tous les étudiants {/api/students} - OK
+    @GetMapping("/students")
+    public ResponseEntity<List<Student>> findAllStudents() {
+        List<Student> students = studentService.findAllStudents();
+        return new ResponseEntity<>(students, HttpStatus.OK);
+    }
+
+    // GET Afficher un étudiant par globalId {/api/students/{globalId}}
+    @GetMapping("/students/{globalId}")
+    public ResponseEntity<Map<String, Object>> findStudentByGlobalId(
+            @PathVariable(value = "globalId", required = true) long globalId) {
+
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        try {
+            // Vérifier si le globalId existe pour un étudiant donné
+            Student student = studentService.findStudentByGlobalId(globalId);
+            if (student != null) {
+                String successMessage = "Student found with global id : " + globalId;
+                responseAsMap.put("Sucess message: ", successMessage);
+                responseAsMap.put("Student found: ", student);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
+
+            } else {
+                String errorMessage = "Student with global id: " + globalId + " not found";
+                responseAsMap.put("Error message: ", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+            }
+        } catch (DataAccessException e) {
+            String errorGrave = "Error found for student con globalId : " + globalId;
+            responseAsMap.put("Error grave: ", errorGrave);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return responseEntity;
-
     }
 
-    //GET Afficher tous les étudiants {/api/students} - OK
-    @GetMapping("/students")
-    public ResponseEntity<List<Student>> findAllStudents(){
-        List<Student> students = studentService.findAllStudents();
-        return new ResponseEntity<>(students,HttpStatus.OK);
+    // PUT Modifier un étudiant en utilisant son global_id {/api/put/{globalId}}
+    public ResponseEntity<Map<String, Object>> updateStudentByGlobalId(
+            @Valid @PathVariable(value = "globalId", required = true) long globalId,
+            @RequestBody Student student, BindingResult validationResults) {
+
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        //Vérifier si il y'a des champs invalides
+        if (validationResults.hasErrors()) {
+            List<String> errorsList = new ArrayList<>();
+
+            List<ObjectError> objectErrors = validationResults.getAllErrors();
+            objectErrors.forEach(objectError -> errorsList.add(objectError.getDefaultMessage()));
+
+            responseAsMap.put("error", errorsList);
+            responseAsMap.put("Incorrect Student", student);
+
+            // Réponse en cas d'erreur de validation
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
+            return responseEntity;
+        }
+        try {
+            Student savedStudent = studentService.findStudentByGlobalId(globalId);
+            if (savedStudent != null){
+                savedStudent.setFirstName(student.getFirstName());
+                savedStudent.setSurname(student.getSurname());
+                savedStudent.setEmail(student.getEmail());
+                savedStudent.setLanguage(student.getLanguage());
+                savedStudent.setInitialLevel(student.getInitialLevel());
+                String successMessage = "The student with globalId: " + globalId + "has been modified successfully.";
+                responseAsMap.put("Sucess Message", successMessage);
+                responseAsMap.put("Saved student", savedStudent);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
+            }           
+        } catch (DataAccessException e) {
+            String error = "The student could not be saved : "+ e.getMostSpecificCause();
+            responseAsMap.put("Error", error);
+            responseAsMap.put("Modified student",student);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
     }
 
-    //GET Afficher un étudiant par globalId {/api/students/{globalId}}
-    // @GetMapping("/students/{globalId}")
-    // public ResponseEntity<Map<String, Object>> findStudentByGlobalId(@PathVariable (value = "globalId", required = true) long globalId) {
-        
-    //     Map<String, Object> responseAsMap = new HashMap<>();
-    //     ResponseEntity <Map<String,Object>> responseEntity = null;
+    // DELETE Supprimer un étudiant en utilisant son global_id {/api/delete/{globalId}}
+    @DeleteMapping("/students/{globalId}")
+    public ResponseEntity<Map<String, Object>> deleteStudentByGlobalId(
+            @PathVariable(value = "globalId", required = true) long globalId) {
 
-    //     try {
-    //         Student student = studentService.findByStudent(globalId);
-            
-            
-    //     } catch (Exception e) {
-    //         // TODO: handle exception
-    //     }
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
 
+        try {
+            // Vérifier si le globalId existe pour un étudiant donné
+            Student student = studentService.findStudentByGlobalId(globalId);
+            if (student != null) {
+                // Si l'étudiant existe, le supprimer
+                studentService.deleteStudentByGlobalId(globalId);
+                String successMessage = "Student with global id : " + globalId + "has been deleted";
+                responseAsMap.put("Sucess message: ", successMessage);
+                responseAsMap.put("Student deleted: ", student);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
+            } else {
+                // Sinon, envoyer un message d'erreur
+                String errorMessage = "Student with global id: " + globalId + " not found and cannot be deleted";
+                responseAsMap.put("Error message: ", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+            }
+        } catch (DataAccessException e) {
+            String errorGrave = "Error found for student con globalId : " + globalId;
+            responseAsMap.put("Error grave: ", errorGrave);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);                                                                                                                                                                                                                               // exception
+        }
 
-
-    //     return null;
-    // }
-    
-    
-    
-    
-    //PUT Modifier un étudiant en utilisant son global_id
-    //DELETE Supprimer un étudiant en utilisant son global_id
+        return responseEntity;
+    }
 
 }
