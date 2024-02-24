@@ -17,8 +17,7 @@ public class StudentServiceImpl implements StudentService {
     
     @Override
     public Student saveStudent(Student student) {
-        return studentDao.save(student);
-     
+        return studentDao.save(student);  
     }
 
     @Override
@@ -40,6 +39,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudentByGlobalId(String globalId) {
         studentDao.deleteStudentByGlobalId(globalId);
+    }
+
+    @Override
+    public void deleteById(int idStudent) {
+        studentDao.deleteById(idStudent);
     }
 
 }

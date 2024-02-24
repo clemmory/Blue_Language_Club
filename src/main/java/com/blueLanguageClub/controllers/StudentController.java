@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,8 +36,7 @@ public class StudentController {
     // POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
     @Transactional
-    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student,
-            BindingResult validationResults) {
+    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student,BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -77,10 +77,13 @@ public class StudentController {
     @GetMapping("/students")
     public ResponseEntity<List<Student>> findAllStudents() {
         List<Student> students = studentService.findAllStudents();
+        if(students.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    // GET Afficher un étudiant par globalId {/api/students/{globalId}}
+    // GET Afficher un étudiant par globalId {/api/students/{globalId}} - OK
     @GetMapping("/students/{globalId}")
     public ResponseEntity<Map<String, Object>> findStudentByGlobalId(
             @PathVariable(value = "globalId", required = true) String globalId) {
@@ -111,10 +114,11 @@ public class StudentController {
         return responseEntity;
     }
 
-    // PUT Modifier un étudiant en utilisant son global_id {/api/put/{globalId}}
+    // PUT Modifier un étudiant en utilisant son global_id {/api/students/{globalId}} - OK
+    @PutMapping("/students/{globalId}")
     public ResponseEntity<Map<String, Object>> updateStudentByGlobalId(
-            @Valid @PathVariable(value = "globalId", required = true) String globalId,
-            @RequestBody Student student, BindingResult validationResults) {
+            @PathVariable(value = "globalId", required = true) String globalId,
+            @Valid @RequestBody Student student, BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -141,10 +145,14 @@ public class StudentController {
                 savedStudent.setEmail(student.getEmail());
                 savedStudent.setLanguage(student.getLanguage());
                 savedStudent.setInitialLevel(student.getInitialLevel());
-                String successMessage = "The student with globalId: " + globalId + "has been modified successfully.";
+                String successMessage = "The student with globalId: " + globalId + " has been modified successfully.";
                 responseAsMap.put("Sucess Message", successMessage);
                 responseAsMap.put("Saved student", savedStudent);
                 responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
+            } else {
+                String errorMessage = "Student with global id: " + globalId + " not found";
+                responseAsMap.put("Error message: ", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
             }           
         } catch (DataAccessException e) {
             String error = "The student could not be saved : "+ e.getMostSpecificCause();
@@ -155,14 +163,14 @@ public class StudentController {
         return responseEntity;
     }
 
-    // DELETE Supprimer un étudiant en utilisant son global_id {/api/delete/{globalId}}
+    // DELETE Supprimer un étudiant en utilisant son global_id {/api/delete/{globalId}} - NOT WORKING
     @DeleteMapping("/students/{globalId}")
+    @Transactional
     public ResponseEntity<Map<String, Object>> deleteStudentByGlobalId(
             @PathVariable(value = "globalId", required = true) String globalId) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
-        ResponseEntity<Map<String, Object>> responseEntity = null;
-
+        ResponseEntity<Map<String, Object>> responseEntity = null;    
         try {
             // Vérifier si le globalId existe pour un étudiant donné
             Student student = studentService.findStudentByGlobalId(globalId);

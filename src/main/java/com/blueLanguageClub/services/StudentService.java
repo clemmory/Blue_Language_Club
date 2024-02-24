@@ -12,6 +12,9 @@ public interface StudentService {
     //Afficher un participant grace a son id
     public Student findByStudent(int idStudent);
 
+    //Supprimer un participant grâce a son id 
+    public void deleteById(int idStudent);
+
     //Supprimer un participant avec son globalId
     public void deleteStudentByGlobalId(String globalId);
 

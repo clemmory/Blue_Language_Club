@@ -3,7 +3,7 @@ package com.blueLanguageClub.helpers;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -70,7 +70,7 @@ public class LoadSampleData {
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.A)
                 .max_students(8)
-                .students(List.of(student1, student2))
+                .students(Set.of(student1, student2))
                 .build());
 
             courseService.saveCourse(Course.builder()
@@ -82,18 +82,15 @@ public class LoadSampleData {
                 .language(LANGUAGE.FRENCH)
                 .level(LEVEL.A)
                 .max_students(8)
-                .students(List.of(student3, student4))
+                .students(Set.of(student3, student4))
                 .build());
 
 
-            student1.setCourses(List.of(courseService.findByIdCourse(1)));
-            student2.setCourses(List.of(courseService.findByIdCourse(1)));
-            student3.setCourses(List.of(courseService.findByIdCourse(2)));
-            student4.setCourses(List.of(courseService.findByIdCourse(2)));
+            student1.setCourses(Set.of(courseService.findByIdCourse(1)));
+            student2.setCourses(Set.of(courseService.findByIdCourse(1)));
+            student3.setCourses(Set.of(courseService.findByIdCourse(2)));
+            student4.setCourses(Set.of(courseService.findByIdCourse(2)));
 
-        
-
-            
 
         };
     }

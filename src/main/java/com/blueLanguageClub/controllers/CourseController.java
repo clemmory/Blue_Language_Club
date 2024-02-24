@@ -43,7 +43,7 @@ public class CourseController {
     
 }
 
-    //Enregistrer un cours
+    //Enregistrer un cours - OK
     @PostMapping("/courses")
     @Transactional
     public ResponseEntity<Map<String, Object>> saveCourse(
@@ -84,22 +84,22 @@ public class CourseController {
     }
 
 
-    @DeleteMapping("/{id}")
+    //Supprimer un cours - OK
+    @DeleteMapping("/courses/{id}")
     public ResponseEntity<Map<String, Object>> deleteCourseById(@PathVariable(name = "id", required = true) Integer idCourse) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-
-            courseService.deleteCourse(courseService.findByIdCourse(idCourse));
+            courseService.deleteById(idCourse);
             String successMessage = "The course with id " + idCourse + " has been deleted.";
             responseAsMap.put("successMessage", successMessage);
             responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
 
         } catch (DataAccessException e) {
 
-            String seriousError = "An error occurred while deleting the product with id " + idCourse + ", and the most probable cause is " + e.getMostSpecificCause();
+            String seriousError = "An error occurred while deleting the course with id " + idCourse + ", and the most probable cause is " + e.getMostSpecificCause();
             responseAsMap.put("seriousError", seriousError);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }

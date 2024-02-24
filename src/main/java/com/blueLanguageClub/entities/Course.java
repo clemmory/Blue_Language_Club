@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -79,11 +80,25 @@ public class Course implements Serializable {
     // Ajouter la relation MANY to MANY avec users
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE
+            CascadeType.MERGE,
     })
     @JoinTable(name = "students_courses", joinColumns = { 
-        @JoinColumn(name = "course_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "student_id") })
-    @UniqueElements
-    private List<Student> students;
+        @JoinColumn(name = "course_id", referencedColumnName = "id") }, inverseJoinColumns = {
+            @JoinColumn(name = "student_id",referencedColumnName = "id") })
+    private Set<Student> students;
+
+    public void addStudent(Student student) {
+        this.students.add(student);
+        student.getCourses().add(this);
+    }
+
+    public void removeStudent(int studentId) {
+        Student student = this.students.stream().filter(t -> t.getId() == studentId).findFirst().orElse(null);
+        if (student != null) {
+          this.students.remove(student);
+          student.getCourses().remove(this);
+        }
+    }
+
+
 }

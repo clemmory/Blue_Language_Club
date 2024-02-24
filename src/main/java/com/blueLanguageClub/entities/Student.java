@@ -3,6 +3,7 @@ package com.blueLanguageClub.entities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.UniqueElements;
@@ -75,12 +76,10 @@ public class Student implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE
+            CascadeType.MERGE,
     }, mappedBy = "students")
     @JsonIgnore
-    @UniqueElements
-    private List<Course> courses;
-    //Changer pour SET (aussi dans datos de muestras)
+    private Set<Course> courses;
 
     //Générer globalId
     public String generateGlobalId(){
