@@ -1,7 +1,6 @@
 package com.blueLanguageClub.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -34,12 +33,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student findStudentByGlobalId(long globalId) {
+    public Student findStudentByGlobalId(String globalId) {
         return studentDao.findStudentByGlobalId(globalId);
     }
 
     @Override
-    public void deleteStudentByGlobalId(long globalId) {
+    public void deleteStudentByGlobalId(String globalId) {
         studentDao.deleteStudentByGlobalId(globalId);
     }
 

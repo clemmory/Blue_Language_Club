@@ -13,13 +13,13 @@ public interface StudentService {
     public Student findByStudent(int idStudent);
 
     //Supprimer un participant avec son globalId
-    public void deleteStudentByGlobalId(long globalId);
+    public void deleteStudentByGlobalId(String globalId);
 
     //Afficher tous les participants
     public List<Student> findAllStudents();
 
     //Afficher un étudiant grâce à son globalId
-    public Student findStudentByGlobalId(long globalId);
+    public Student findStudentByGlobalId(String globalId);
 
 
 }

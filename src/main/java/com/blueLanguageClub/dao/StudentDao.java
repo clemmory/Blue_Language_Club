@@ -8,8 +8,8 @@ import com.blueLanguageClub.entities.Student;
 @Repository
 public interface StudentDao extends JpaRepository<Student, Integer> {
 
-    Student findStudentByGlobalId(long globalId);
+    Student findStudentByGlobalId(String globalId);
 
-    void deleteStudentByGlobalId(long globalId);
+    void deleteStudentByGlobalId(String globalId);
 
 }

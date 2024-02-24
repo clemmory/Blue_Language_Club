@@ -83,7 +83,7 @@ public class StudentController {
     // GET Afficher un étudiant par globalId {/api/students/{globalId}}
     @GetMapping("/students/{globalId}")
     public ResponseEntity<Map<String, Object>> findStudentByGlobalId(
-            @PathVariable(value = "globalId", required = true) long globalId) {
+            @PathVariable(value = "globalId", required = true) String globalId) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -113,7 +113,7 @@ public class StudentController {
 
     // PUT Modifier un étudiant en utilisant son global_id {/api/put/{globalId}}
     public ResponseEntity<Map<String, Object>> updateStudentByGlobalId(
-            @Valid @PathVariable(value = "globalId", required = true) long globalId,
+            @Valid @PathVariable(value = "globalId", required = true) String globalId,
             @RequestBody Student student, BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
@@ -158,7 +158,7 @@ public class StudentController {
     // DELETE Supprimer un étudiant en utilisant son global_id {/api/delete/{globalId}}
     @DeleteMapping("/students/{globalId}")
     public ResponseEntity<Map<String, Object>> deleteStudentByGlobalId(
-            @PathVariable(value = "globalId", required = true) long globalId) {
+            @PathVariable(value = "globalId", required = true) String globalId) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;

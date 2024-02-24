@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
@@ -82,5 +84,6 @@ public class Course implements Serializable {
     @JoinTable(name = "students_courses", joinColumns = { 
         @JoinColumn(name = "course_id") }, inverseJoinColumns = {
             @JoinColumn(name = "student_id") })
+    @UniqueElements
     private List<Student> students;
 }
