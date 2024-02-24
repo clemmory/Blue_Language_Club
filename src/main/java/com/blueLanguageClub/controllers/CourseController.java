@@ -33,7 +33,7 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    //Affficher tous les cours 
+    //Affficher tous les cours - OK
     @GetMapping("/courses")
     public ResponseEntity<List<Course>> findAllCourses() {
 
@@ -43,7 +43,7 @@ public class CourseController {
     
 }
 
-    //Enregistrer un curs
+    //Enregistrer un cours
     @PostMapping("/courses")
     @Transactional
     public ResponseEntity<Map<String, Object>> saveCourse(
