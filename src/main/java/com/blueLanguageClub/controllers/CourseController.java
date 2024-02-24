@@ -35,9 +35,7 @@ public class CourseController {
 
     //Affficher tous les cours 
     @GetMapping("/courses")
-   
-    
-     public ResponseEntity<List<Course>> findAllCourses() {
+    public ResponseEntity<List<Course>> findAllCourses() {
 
         List<Course> courses = courseService.findAllCourses();
 
@@ -54,7 +52,7 @@ public class CourseController {
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
-        // Vérifier si l'objet curs comporte des erreurs
+        // Vérifier si le cours à enregistrer comporte des erreurs
         if (validationResults.hasErrors()) {
             List<String> errorsList = new ArrayList<>();
 
@@ -75,7 +73,7 @@ public class CourseController {
             responseAsMap.put("Saved course", savedCourse);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
         } catch (DataAccessException e) {
-            String error = "Failed to add new user " + e.getMostSpecificCause();
+            String error = "Failed to add new course " + e.getMostSpecificCause();
             responseAsMap.put("error", error);
             responseAsMap.put("Course not saved", course);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
