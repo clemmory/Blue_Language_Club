@@ -3,6 +3,7 @@ package com.blueLanguageClub.services;
 import java.util.List;
 
 import com.blueLanguageClub.entities.Course;
+import com.blueLanguageClub.entities.LANGUAGE;
 
 public interface CourseService {
 
@@ -17,6 +18,6 @@ public interface CourseService {
 
     public void deleteById(int id);
     
+    public List<Course> findCoursesByLanguage(LANGUAGE language);
     
-
 }

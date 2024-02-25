@@ -88,6 +88,17 @@ public class LoadSampleData {
                 .max_students(8)
                 .students(Set.of(student3, student4))
                 .build());
+            
+            courseService.saveCourse(Course.builder()
+                .title("Français - niveau B")
+                .date(LocalDate.of(2024, Month.JANUARY, 17))
+                .time(LocalTime.of(11, 30))
+                .mode(MODE.ONSITE)
+                .place("Salle B.3")
+                .language(LANGUAGE.FRENCH)
+                .level(LEVEL.A)
+                .max_students(8)
+                .build());
 
 
             student1.setCourses(Set.of(courseService.findByIdCourse(1)));

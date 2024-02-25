@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.blueLanguageClub.dao.CourseDao;
 import com.blueLanguageClub.entities.Course;
+import com.blueLanguageClub.entities.LANGUAGE;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +39,11 @@ import lombok.RequiredArgsConstructor;
     @Override
     public void deleteById(int id) {
       courseDao.deleteById(id);
+    }
+
+    @Override
+    public List<Course> findCoursesByLanguage(LANGUAGE language) {
+      return courseDao.findCoursesByLanguage(language);
     }
     
 
