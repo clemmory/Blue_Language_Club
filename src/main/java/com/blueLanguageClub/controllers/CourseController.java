@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blueLanguageClub.entities.Course;
+import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
 
 
@@ -145,7 +146,7 @@ public class CourseController {
             return responseEntity;
         }
        
-        //S'il ya pas des erreurs dans le cours,on modifie le curs
+        //S'il y a pas des erreurs dans le cours,on modifie le curs
         try {
             Course updatedCourse = courseService.findByIdCourse(idCourse);
             if(updatedCourse != null) {
@@ -178,10 +179,6 @@ public class CourseController {
         return responseEntity;
     }
   
-
-    
-    // GET Retrieved all students of a specific course Rosa
-
     
 
 }

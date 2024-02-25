@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blueLanguageClub.entities.Student;
+import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
 
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentController {
 
     private final StudentService studentService;
+    private final CourseService courseService;
 
     // POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
@@ -194,6 +196,20 @@ public class StudentController {
         }
 
         return responseEntity;
+    }
+
+
+    // GET Récupérer tous les étudiants d'un cours
+    @GetMapping("/course/{courseId}/students")
+    public ResponseEntity<List<Student>> getStudentsByCourse(@PathVariable(name = "courseId") Integer courseId) {
+
+        if(!courseService.existsById(courseId)) {
+          //  throw new ResourceNotFoundException("Course with id " + courseId + " not found.");
+        }
+
+        List<Student> students = studentService.findStudentsByCourseId(courseId);
+
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
 }

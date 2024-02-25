@@ -17,6 +17,8 @@ public interface CourseService {
 
     public void deleteById(int id);
     
+    public boolean existsById(Integer courseId);
+    
     
 
 }

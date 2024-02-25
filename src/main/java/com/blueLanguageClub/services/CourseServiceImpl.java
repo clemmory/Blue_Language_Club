@@ -39,6 +39,11 @@ import lombok.RequiredArgsConstructor;
     public void deleteById(int id) {
       courseDao.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(Integer courseId) {
+      return courseDao.existsById(courseId);
+    }
     
 
  }
