@@ -1,5 +1,7 @@
 package com.blueLanguageClub.controllers;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +40,6 @@ public class CourseController {
     public ResponseEntity<List<Course>> findAllCourses() {
 
         List<Course> courses = courseService.findAllCourses();
-
         return new ResponseEntity<>(courses, HttpStatus.OK);
     
 }
@@ -84,7 +85,7 @@ public class CourseController {
     }
 
 
-    //Supprimer un cours - OK
+    //Supprimer un cours 
     @DeleteMapping("/courses/{id}")
     public ResponseEntity<Map<String, Object>> deleteCourseById(@PathVariable(name = "id", required = true) Integer idCourse) {
 
@@ -92,13 +93,26 @@ public class CourseController {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            courseService.deleteById(idCourse);
-            String successMessage = "The course with id " + idCourse + " has been deleted.";
-            responseAsMap.put("successMessage", successMessage);
-            responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
-
+            Course course = courseService.findByIdCourse(idCourse);
+            LocalDate today = LocalDate.now();
+            LocalTime now = LocalTime.now();
+            if (course != null) {
+                if (course.getDate().isBefore(today) && course.getTime().isBefore(now)) {
+                    String errorMessage = "You can't delete this course because it has already ended";
+                    responseAsMap.put("errorMessage", errorMessage);
+                    responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
+                } else {
+                    courseService.deleteById(idCourse);
+                    String successMessage = "The course with id " + idCourse + " has been deleted.";
+                    responseAsMap.put("successMessage", successMessage);
+                    responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
+                }              
+            } else {
+                String errorMessage = "Course with id : " + idCourse + " not found";
+                responseAsMap.put("errorMessage", errorMessage);
+                responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.NOT_FOUND);
+            }
         } catch (DataAccessException e) {
-
             String seriousError = "An error occurred while deleting the course with id " + idCourse + ", and the most probable cause is " + e.getMostSpecificCause();
             responseAsMap.put("seriousError", seriousError);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,6 +120,11 @@ public class CourseController {
 
         return responseEntity;
     }
+  
+
+    
+    // GET Retrieved all students of a specific course Rosa
+
     
 
 }
