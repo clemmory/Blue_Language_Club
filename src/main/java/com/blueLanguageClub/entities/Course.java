@@ -3,7 +3,6 @@ package com.blueLanguageClub.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -61,6 +60,8 @@ public class Course implements Serializable {
         @JoinColumn(name = "course_id") }, inverseJoinColumns = {
             @JoinColumn(name = "student_id") })
     private List<Student> students;
+
+    
 
 
     // Il faudra ajouter les validations
