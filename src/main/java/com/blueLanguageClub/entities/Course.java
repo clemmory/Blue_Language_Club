@@ -49,7 +49,7 @@ public class Course implements Serializable {
     private String title;
 
     @NotNull(message = "Please indicate the course date")
-    @FutureOrPresent(message = "The indicated date is not valid")
+    // @FutureOrPresent(message = "The indicated date is not valid")
     @DateTimeFormat(pattern = "dd-MM-yyyy")//En el pdf DD-MM-YYYY
     private LocalDate date;
 
