@@ -1,18 +1,11 @@
 package com.blueLanguageClub.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
-
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

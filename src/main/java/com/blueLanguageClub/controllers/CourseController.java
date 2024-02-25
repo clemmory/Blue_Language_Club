@@ -88,7 +88,6 @@ public class CourseController {
 
     //Supprimer un cours 
     @DeleteMapping("/courses/{idCourse}")
-    @Transactional
     public ResponseEntity<Map<String, Object>> deleteCourseById(@PathVariable(name = "idCourse", required = true) Integer idCourse) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
