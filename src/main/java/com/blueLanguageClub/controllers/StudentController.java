@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
@@ -108,8 +109,8 @@ public class StudentController {
                 responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
             }
         } catch (DataAccessException e) {
-            String errorGrave = "Error found for student con globalId : " + globalId;
-            responseAsMap.put("Error grave: ", errorGrave);
+            String errorGrave = "Error found for student with globalId : " + globalId;
+            responseAsMap.put("Serious error ", errorGrave);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -201,15 +202,33 @@ public class StudentController {
 
     // GET Récupérer tous les étudiants d'un cours
     @GetMapping("/course/{courseId}/students")
-    public ResponseEntity<List<Student>> getStudentsByCourse(@PathVariable(name = "courseId") Integer courseId) {
+    public ResponseEntity<Map<String, Object>> getStudentsByCourse(@PathVariable(name = "courseId") Integer courseId) {
 
-        if(!courseService.existsById(courseId)) {
-          //  throw new ResourceNotFoundException("Course with id " + courseId + " not found.");
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        try {
+            // Vérifier si courseId existe
+            if (!courseService.existsById(courseId)) {
+                String errorMessage = ("Course with id " + courseId + " not found.");
+                responseAsMap.put("Error message", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+            } else {
+                List<Student> students = studentService.findStudentsByCourseId(courseId);
+                String succesMessage = ("Students from de course with id " + courseId);
+                responseAsMap.put("Success message: ", succesMessage);
+                responseAsMap.put ("List found", students);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
+             }
+            
+        } catch (Exception e) {
+            String errorGrave = "Error found for students by course with id : " + courseId;
+            responseAsMap.put("Serious error" , errorGrave);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        List<Student> students = studentService.findStudentsByCourseId(courseId);
+        return responseEntity;
 
-        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
 }
