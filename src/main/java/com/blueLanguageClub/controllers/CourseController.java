@@ -1,20 +1,15 @@
 package com.blueLanguageClub.controllers;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +22,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blueLanguageClub.dto.CourseStudentDto;
 import com.blueLanguageClub.entities.Course;
-import com.blueLanguageClub.entities.LANGUAGE;
 import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
@@ -48,30 +41,7 @@ public class CourseController {
     private final CourseService courseService;
     private final StudentService studentService;
 
-    //ADMIN - GET Affficher une liste de tous les cours disponibles {/api/courses} 
-    //Cours sorted by dates 
-    // @GetMapping("/courses")
-    // public ResponseEntity<List<Course>> findAllCourses(
-    //     @RequestParam(name = "language", required = false) LANGUAGE language){
-        
-    //     LocalDate today = LocalDate.now();
-    //     LocalTime now = LocalTime.now(); 
-    //     Sort sortByDate = Sort.by("date");
-    //     List<Course>existingCourses = new ArrayList<Course>();
 
-    //     //Je fais une recherche génerale ou par language
-    //     if(language == null){
-    //         courseService.findAllCoursesSorted(sortByDate).forEach(existingCourses::add);
-    //     } else {
-    //         courseService.findCoursesByLanguage(language).forEach(existingCourses::add);
-    //     }
-
-    //     List<Course> courses = existingCourses.stream()
-    //     .filter(c -> c.getDate().isAfter(today) || (c.getDate().isEqual(today) && c.getTime().isAfter(now)))
-    //     .collect(Collectors.toList());
-
-    //     return new ResponseEntity<>(courses, HttpStatus.OK);
-    // }
 
     //ADMIN - Enregistrer un cours - OK
     @PostMapping("/courses")
@@ -98,7 +68,7 @@ public class CourseController {
             return responseEntity;
         }
         try { 
-            if(!courseService.isCourseinFuture(course)){
+            if(!courseService.isCourseInFuture(course)){
                 String errorMessage = "You cannot add at an earlier date/time, please change date/time.";
                 responseAsMap.put("errorMessage", errorMessage);
                 responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
@@ -131,7 +101,7 @@ public class CourseController {
         try {
             Course course = courseService.findByIdCourse(idCourse);
             if (course != null) {
-                if (!courseService.isCourseinFuture(course)) {
+                if (!courseService.isCourseInFuture(course)) {
                     String errorMessage = "You can't delete this course because it has already ended";
                     responseAsMap.put("errorMessage", errorMessage);
                     responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
@@ -183,7 +153,7 @@ public class CourseController {
             //Vérifier si le cours  à modifier existe
             if(updatedCourse != null) {
                 //Vérification que l'heure ne soit pas passée si la date est celle du jour
-                if (!courseService.isCourseinFuture(course)) {
+                if (!courseService.isCourseInFuture(course)) {
                     String errorMessage = "You can't update this course with an anterior date";
                     responseAsMap.put("errorMessage", errorMessage);
                     responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
