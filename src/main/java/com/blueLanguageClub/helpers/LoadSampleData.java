@@ -67,7 +67,7 @@ public class LoadSampleData {
 
             courseService.saveCourse(Course.builder()
                 .title("Français - niveau A")
-                .date(LocalDate.of(2023, Month.APRIL, 02))
+                .date(LocalDate.of(2024, Month.APRIL, 02))
                 .time(LocalTime.of(11, 30))
                 .mode(MODE.ONSITE)
                 .place("C.2")
@@ -79,7 +79,7 @@ public class LoadSampleData {
 
             courseService.saveCourse(Course.builder()
                 .title("English - Level B")
-                .date(LocalDate.of(2024, Month.MARCH, 22))
+                .date(LocalDate.of(2023, Month.MARCH, 22))
                 .time(LocalTime.of(10, 30))
                 .mode(MODE.ONLINE)
                 .place("Teams")
@@ -88,6 +88,8 @@ public class LoadSampleData {
                 .max_students(8)
                 .students(Set.of(student3, student4))
                 .build());
+
+            
 
 
             student1.setCourses(Set.of(courseService.findByIdCourse(1)));
