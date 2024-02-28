@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blueLanguageClub.dto.CourseStudentDto;
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.LANGUAGE;
 import com.blueLanguageClub.entities.Student;
@@ -47,28 +49,28 @@ public class CourseController {
 
     //ADMIN - GET Affficher une liste de tous les cours disponibles {/api/courses} 
     //Cours sorted by dates 
-    @GetMapping("/courses")
-    public ResponseEntity<List<Course>> findAllCourses(
-        @RequestParam(name = "language", required = false) LANGUAGE language){
+    // @GetMapping("/courses")
+    // public ResponseEntity<List<Course>> findAllCourses(
+    //     @RequestParam(name = "language", required = false) LANGUAGE language){
         
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now(); 
-        Sort sortByDate = Sort.by("date");
-        List<Course>existingCourses = new ArrayList<Course>();
+    //     LocalDate today = LocalDate.now();
+    //     LocalTime now = LocalTime.now(); 
+    //     Sort sortByDate = Sort.by("date");
+    //     List<Course>existingCourses = new ArrayList<Course>();
 
-        //Je fais une recherche génerale ou par language
-        if(language == null){
-            courseService.findAllCoursesSorted(sortByDate).forEach(existingCourses::add);
-        } else {
-            courseService.findCoursesByLanguage(language).forEach(existingCourses::add);
-        }
+    //     //Je fais une recherche génerale ou par language
+    //     if(language == null){
+    //         courseService.findAllCoursesSorted(sortByDate).forEach(existingCourses::add);
+    //     } else {
+    //         courseService.findCoursesByLanguage(language).forEach(existingCourses::add);
+    //     }
 
-        List<Course> courses = existingCourses.stream()
-        .filter(c -> c.getDate().isAfter(today) || (c.getDate().isEqual(today) && c.getTime().isAfter(now)))
-        .collect(Collectors.toList());
+    //     List<Course> courses = existingCourses.stream()
+    //     .filter(c -> c.getDate().isAfter(today) || (c.getDate().isEqual(today) && c.getTime().isAfter(now)))
+    //     .collect(Collectors.toList());
 
-        return new ResponseEntity<>(courses, HttpStatus.OK);
-    }
+    //     return new ResponseEntity<>(courses, HttpStatus.OK);
+    // }
 
     //ADMIN - Enregistrer un cours - OK
     @PostMapping("/courses")
@@ -221,69 +223,56 @@ public class CourseController {
 
     
     //ATTENDEE GET An attendee can list all available classes for future dates {students/{globalid}/courses}
-    //Only classes that are relevant to this student
 
     //Cours sorted by dates 
-    // @GetMapping("/students/{globalId}/courses")
-    // public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
-    //     @PathVariable(name = "globalId", required = true) String globalId) {
+    @GetMapping("/students/{globalId}/courses")
+    public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
+        @PathVariable(name = "globalId", required = true) String globalId) {
         
 
-    //     Map<String, Object> responseAsMap = new HashMap<>();
-    //     ResponseEntity<Map<String, Object>> responseEntity = null;
-    //     Sort sortByDate = Sort.by("date");
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+        Sort sortByDate = Sort.by("date");
 
 
-    // try {
-    //     Student student = studentService.findStudentByGlobalId(globalId);
-    //     //Si l'étudiant existe je cherche les cours 
-    //     if (student != null) {
-    //         //Cours existants par dates
-    //         List<Course>existingCourses = courseService.findAllCoursesSorted(sortByDate);
+    try {
+        Student student = studentService.findStudentByGlobalId(globalId);
+        //Si l'étudiant existe je cherche les cours 
+        if (student != null) {
+            //Cours existants par dates
+            List<Course>existingCourses = courseService.findAllCoursesSorted(sortByDate);
 
-    //         //Je filtre les cours existants pour ne montrer que ceux à une future date
-    //         List<Course> courses = existingCourses.stream()
-    //         .filter(c -> courseService.isCourseinFuture(c) == true ) 
-    //         .collect(Collectors.toList());
+            //Je filtre les cours existants pour ne montrer que ceux à une future date
+            List<Course> coursesFuture = existingCourses.stream()
+            .filter(c -> courseService.isCourseInFuture(c) == true ) 
+            .collect(Collectors.toList());
 
-    //         List<Map<String, Object>> finalCourses = new ArrayList<>();
 
-    //         for (Course course : courses) {
-    //             Map<String, Object> courseDisplay = new HashMap<>(); // Create a new map for each course
-            
-    //             courseDisplay.put("title", course.getTitle());
-    //             courseDisplay.put("Date", course.getDate());
-    //             courseDisplay.put("Time", course.getTime());
-    //             courseDisplay.put("Mode", course.getMode());
-    //             courseDisplay.put("Place", course.getPlace());
-    //             courseDisplay.put("Language", course.getLanguage());
-    //             courseDisplay.put("Level", course.getLevel());
-            
-    //             finalCourses.add(courseDisplay);
-    //         }
+            List<CourseStudentDto> dtos = new ArrayList<>();
+            ModelMapper modelMapper = new ModelMapper();
 
-    //         String successMessage = "Student with globalId: " + globalId + " found.";
-    //                 responseAsMap.put("successMessage", successMessage);
-    //                 responseAsMap.put("List courses", finalCourses);
-    //                 responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
-    //     } else {
-    //         String errorMessage = "The student with globalId:" + globalId + "is not found, please ask for registration.";
-    //         responseAsMap.put("errorMessage", errorMessage);
-    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
-    //     }
+            for (Course course : coursesFuture) {
+                dtos.add(modelMapper.map(course, CourseStudentDto.class));
+            }
 
+            String successMessage = "Student with globalId: " + globalId + " found.";
+            responseAsMap.put("successMessage", successMessage);
+            responseAsMap.put("List courses", dtos);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
+        } else {
+            String errorMessage = "The student with globalId:" + globalId + "is not found, please ask for registration.";
+            responseAsMap.put("errorMessage", errorMessage);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
+        }
         
-    // } catch (DataException e) {
-    //     String error = "Error when trying to update course and the most common cause "
-    //                         + e.getMostSpecificCause();   
-    //         responseAsMap.put("Error", error);
-    //         responseAsMap.put("Course tried to be updated ", error);
-    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
+    } catch (DataAccessException e) {
+        String error = "Error when trying to update course and the most common cause "+ e.getMostSpecificCause();   
+        responseAsMap.put("Error", error);
+        responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
         
-
-    //     return responseEntity;
-    // }
+        return responseEntity;
+    }
 
     
 

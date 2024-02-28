@@ -27,6 +27,6 @@ public interface CourseService {
 
     public List<Course> findAllCoursesSorted(Sort sort);
 
-    public boolean isCourseinFuture(Course course);
+    public boolean isCourseInFuture(Course course);
     
 }

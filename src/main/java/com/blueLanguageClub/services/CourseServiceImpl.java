@@ -56,7 +56,7 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
-    public boolean isCourseinFuture(Course course) {
+    public boolean isCourseInFuture(Course course) {
       return (course.getDate().isEqual(LocalDate.now()) && course.getTime().isAfter(LocalTime.now()) || course.getDate().isAfter(LocalDate.now())) ? true : false;   
     }
   
