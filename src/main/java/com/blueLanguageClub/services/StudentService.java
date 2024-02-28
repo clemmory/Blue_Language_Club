@@ -24,5 +24,8 @@ public interface StudentService {
     //Afficher un étudiant grâce à son globalId
     public Student findStudentByGlobalId(String globalId);
 
+    //Récupérer tous les étudiants d'un cours
+    public List<Student> findStudentsByCoursesId(int courseId);
+
 
 }

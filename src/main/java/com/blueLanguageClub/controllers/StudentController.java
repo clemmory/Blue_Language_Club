@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blueLanguageClub.dto.StudentDto;
+import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.Student;
+import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
 
 import jakarta.validation.Valid;
@@ -32,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentController {
 
     private final StudentService studentService;
+    private final CourseService courseService;
 
     // POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
@@ -106,8 +112,8 @@ public class StudentController {
                 responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
             }
         } catch (DataAccessException e) {
-            String errorGrave = "Error found for student con globalId : " + globalId;
-            responseAsMap.put("Error grave: ", errorGrave);
+            String errorGrave = "Error found for student with globalId : " + globalId;
+            responseAsMap.put("Serious errorđ ", errorGrave);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -196,5 +202,43 @@ public class StudentController {
         return responseEntity;
     }
 
+
+    // GET Récupérer tous les étudiants d'un cours
+    @GetMapping("/courses/{courseId}/students")
+    public ResponseEntity<Map<String, Object>> getStudentsByCourse(@PathVariable(name = "courseId", required = true) Integer courseId) {
+
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        try {
+            // Vérifier si courseId existe
+            if (!courseService.existsById(courseId)) {
+                String errorMessage = ("Course with id " + courseId + " not found.");
+                responseAsMap.put("Error message", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+            } else {
+                List<Student> studentsByCourse = studentService.findStudentsByCoursesId(courseId);
+
+                List<StudentDto> dtos = new ArrayList<>();
+                ModelMapper modelMapper = new ModelMapper();
+                for( Student student : studentsByCourse) {
+                    dtos.add(modelMapper.map(student, StudentDto.class));                    
+                }
+                    
+                String succesMessage = ("Students from de course with id " + courseId);
+                responseAsMap.put("Success message: ", succesMessage);
+                responseAsMap.put ("List found", dtos);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
+             }
+            
+        } catch (Exception e) {
+            String errorGrave = "Error found for students by course with id : " + courseId;
+            responseAsMap.put("Serious error" , errorGrave);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+
+    }
 
 }

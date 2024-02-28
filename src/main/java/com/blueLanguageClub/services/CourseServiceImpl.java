@@ -46,6 +46,13 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
+    public boolean existsById(Integer courseId) {
+      return courseDao.existsById(courseId);
+    }
+    
+
+
+    @Override
     public List<Course> findCoursesByLanguage(LANGUAGE language) {
       return courseDao.findCoursesByLanguage(language);
     }
