@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blueLanguageClub.dto.CourseAdminDto;
+import com.blueLanguageClub.dto.CourseStudentDto;
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.LANGUAGE;
 import com.blueLanguageClub.entities.Student;
@@ -221,69 +224,55 @@ public class CourseController {
 
     
     //ATTENDEE GET An attendee can list all available classes for future dates {students/{globalid}/courses}
-    //Only classes that are relevant to this student
-
+    
     //Cours sorted by dates 
-    // @GetMapping("/students/{globalId}/courses")
-    // public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
-    //     @PathVariable(name = "globalId", required = true) String globalId) {
+    @GetMapping("/students/{globalId}/courses")
+    public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
+        @PathVariable(name = "globalId", required = true) String globalId) {
         
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+        Sort sortByDate = Sort.by("date");
 
-    //     Map<String, Object> responseAsMap = new HashMap<>();
-    //     ResponseEntity<Map<String, Object>> responseEntity = null;
-    //     Sort sortByDate = Sort.by("date");
+    try {
+        Student student = studentService.findStudentByGlobalId(globalId);
 
+        //Si l'étudiant existe je cherche les cours 
+        if (student != null) {
 
-    // try {
-    //     Student student = studentService.findStudentByGlobalId(globalId);
-    //     //Si l'étudiant existe je cherche les cours 
-    //     if (student != null) {
-    //         //Cours existants par dates
-    //         List<Course>existingCourses = courseService.findAllCoursesSorted(sortByDate);
-
-    //         //Je filtre les cours existants pour ne montrer que ceux à une future date
-    //         List<Course> courses = existingCourses.stream()
-    //         .filter(c -> courseService.isCourseinFuture(c) == true ) 
-    //         .collect(Collectors.toList());
-
-    //         List<Map<String, Object>> finalCourses = new ArrayList<>();
-
-    //         for (Course course : courses) {
-    //             Map<String, Object> courseDisplay = new HashMap<>(); // Create a new map for each course
+            //Cours existants par dates
+            List<Course> existingCourses = courseService.findAllCoursesSorted(sortByDate);
+            List<CourseStudentDto> dtos = new ArrayList<>();
             
-    //             courseDisplay.put("title", course.getTitle());
-    //             courseDisplay.put("Date", course.getDate());
-    //             courseDisplay.put("Time", course.getTime());
-    //             courseDisplay.put("Mode", course.getMode());
-    //             courseDisplay.put("Place", course.getPlace());
-    //             courseDisplay.put("Language", course.getLanguage());
-    //             courseDisplay.put("Level", course.getLevel());
-            
-    //             finalCourses.add(courseDisplay);
-    //         }
+            ModelMapper modelMapper = new ModelMapper();
 
-    //         String successMessage = "Student with globalId: " + globalId + " found.";
-    //                 responseAsMap.put("successMessage", successMessage);
-    //                 responseAsMap.put("List courses", finalCourses);
-    //                 responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
-    //     } else {
-    //         String errorMessage = "The student with globalId:" + globalId + "is not found, please ask for registration.";
-    //         responseAsMap.put("errorMessage", errorMessage);
-    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
-    //     }
+            //Je filtre les cours existants pour ne montrer que ceux à une future date
+            List<Course> courses = existingCourses.stream()
+            .filter(c -> courseService.isCourseinFuture(c) == true ) 
+            .collect(Collectors.toList());
 
+            //Convert chaque course de la liste filtrée au format  dto
+            for (Course course : courses){
+                dtos.add(modelMapper.map(course, CourseStudentDto.class));
+            }
+            String successMessage = "Student with globalId: " + globalId + " found and can vizuale the available coming courses.";
+            responseAsMap.put("successMessage", successMessage);
+            responseAsMap.put("List courses", dtos);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
+        } else {
+            String errorMessage = "The student with globalId:" + globalId + "is not found, please ask for registration.";
+            responseAsMap.put("errorMessage", errorMessage);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
+        }
         
-    // } catch (DataException e) {
-    //     String error = "Error when trying to update course and the most common cause "
-    //                         + e.getMostSpecificCause();   
-    //         responseAsMap.put("Error", error);
-    //         responseAsMap.put("Course tried to be updated ", error);
-    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-        
-
-    //     return responseEntity;
-    // }
+    } catch (DataAccessException e) {
+        String error = "Error when trying to update course and the most common cause " + e.getMostSpecificCause();   
+        responseAsMap.put("Error", error);
+        responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+       
+        return responseEntity;
+    }
 
     
 
