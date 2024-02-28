@@ -11,6 +11,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -80,8 +81,7 @@ public class CourseController {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now(); 
+
 
         // Vérifier si le cours à enregistrer comporte des erreurs
         if (validationResults.hasErrors()) {
@@ -98,8 +98,8 @@ public class CourseController {
             return responseEntity;
         }
         try { 
-            if(course.getDate().isEqual(today) && course.getTime().isBefore(now)){
-                String errorMessage = "You cannot add a course today at an earlier hour, please change timing.";
+            if(!courseService.isCourseinFuture(course)){
+                String errorMessage = "You cannot add at an earlier date/time, please change date/time.";
                 responseAsMap.put("errorMessage", errorMessage);
                 responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
             } else {
@@ -130,10 +130,8 @@ public class CourseController {
 
         try {
             Course course = courseService.findByIdCourse(idCourse);
-            LocalDate today = LocalDate.now();
-            LocalTime now = LocalTime.now();
             if (course != null) {
-                if (course.getDate().isBefore(today)|| course.getDate().isEqual(today) && course.getTime().isBefore(now)) {
+                if (!courseService.isCourseinFuture(course)) {
                     String errorMessage = "You can't delete this course because it has already ended";
                     responseAsMap.put("errorMessage", errorMessage);
                     responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
@@ -181,13 +179,11 @@ public class CourseController {
         }
        
         try {
-            LocalDate today = LocalDate.now();
-            LocalTime now = LocalTime.now();
             Course updatedCourse = courseService.findByIdCourse(idCourse);
             //Vérifier si le cours  à modifier existe
             if(updatedCourse != null) {
                 //Vérification que l'heure ne soit pas passée si la date est celle du jour
-                if (course.getDate().isEqual(today) && course.getTime().isBefore(now)) {
+                if (!courseService.isCourseinFuture(course)) {
                     String errorMessage = "You can't update this course with an anterior date";
                     responseAsMap.put("errorMessage", errorMessage);
                     responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
