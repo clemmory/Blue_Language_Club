@@ -204,8 +204,8 @@ public class StudentController {
 
 
     // GET Récupérer tous les étudiants d'un cours
-    @GetMapping("/course/{courseId}/students")
-    public ResponseEntity<Map<String, Object>> getStudentsByCourse(@PathVariable(name = "courseId") Integer courseId) {
+    @GetMapping("/courses/{courseId}/students")
+    public ResponseEntity<Map<String, Object>> getStudentsByCourse(@PathVariable(name = "courseId", required = true) Integer courseId) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
