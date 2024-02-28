@@ -23,8 +23,6 @@ public interface CourseService {
 
     public void deleteById(int id);
     
-    public boolean existsById(Integer courseId);
-    
     public List<Course> findCoursesByLanguage(LANGUAGE language);
 
     public List<Course> findAllCoursesSorted(Sort sort);
