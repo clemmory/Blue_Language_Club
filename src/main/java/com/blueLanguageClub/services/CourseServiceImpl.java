@@ -1,6 +1,10 @@
 package com.blueLanguageClub.services;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blueLanguageClub.dao.CourseDao;
@@ -45,6 +49,15 @@ import lombok.RequiredArgsConstructor;
     public List<Course> findCoursesByLanguage(LANGUAGE language) {
       return courseDao.findCoursesByLanguage(language);
     }
-    
 
+    @Override
+    public List<Course> findAllCoursesSorted(Sort sort) {
+      return courseDao.findAll(sort);
+    }
+
+    @Override
+    public boolean isCourseinFuture(Course course) {
+      return (course.getDate().isEqual(LocalDate.now()) && course.getTime().isAfter(LocalTime.now()) || course.getDate().isAfter(LocalDate.now())) ? true : false;   
+    }
+  
  }

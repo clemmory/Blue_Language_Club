@@ -12,4 +12,5 @@ import com.blueLanguageClub.entities.LANGUAGE;
 public interface CourseDao extends JpaRepository<Course, Integer> {
 
     List<Course> findCoursesByLanguage(LANGUAGE language);
+
 }

@@ -2,6 +2,7 @@ package com.blueLanguageClub.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.LANGUAGE;
+import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
-
+import com.blueLanguageClub.services.StudentService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,19 +43,22 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
 
     private final CourseService courseService;
+    private final StudentService studentService;
 
-    //GET Affficher tous les cours disponibles {/api/courses} 
+    //ADMIN - GET Affficher une liste de tous les cours disponibles {/api/courses} 
+    //Cours sorted by dates 
     @GetMapping("/courses")
     public ResponseEntity<List<Course>> findAllCourses(
         @RequestParam(name = "language", required = false) LANGUAGE language){
         
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now(); 
+        Sort sortByDate = Sort.by("date");
         List<Course>existingCourses = new ArrayList<Course>();
 
         //Je fais une recherche génerale ou par language
         if(language == null){
-            courseService.findAllCourses().forEach(existingCourses::add);
+            courseService.findAllCoursesSorted(sortByDate).forEach(existingCourses::add);
         } else {
             courseService.findCoursesByLanguage(language).forEach(existingCourses::add);
         }
@@ -64,7 +70,7 @@ public class CourseController {
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
-    //Enregistrer un cours - OK
+    //ADMIN - Enregistrer un cours - OK
     @PostMapping("/courses")
     @Transactional
     public ResponseEntity<Map<String, Object>> saveCourse(
@@ -72,6 +78,8 @@ public class CourseController {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now(); 
 
         // Vérifier si le cours à enregistrer comporte des erreurs
         if (validationResults.hasErrors()) {
@@ -87,12 +95,18 @@ public class CourseController {
 
             return responseEntity;
         }
-        try {
-            Course savedCourse = courseService.saveCourse(course);
-            String successMessage = "The course has been added successfully.";
-            responseAsMap.put("Success message", successMessage);
-            responseAsMap.put("Saved course", savedCourse);
-            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
+        try { 
+            if(course.getDate().isEqual(today) && course.getTime().isBefore(now)){
+                String errorMessage = "You cannot add a course today at an earlier hour, please change timing.";
+                responseAsMap.put("errorMessage", errorMessage);
+                responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
+            } else {
+                Course savedCourse = courseService.saveCourse(course);
+                String successMessage = "The course has been added successfully.";
+                responseAsMap.put("Success message", successMessage);
+                responseAsMap.put("Saved course", savedCourse);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.CREATED);
+            }
         } catch (DataAccessException e) {
             String error = "Failed to add new course " + e.getMostSpecificCause();
             responseAsMap.put("error", error);
@@ -105,7 +119,7 @@ public class CourseController {
     }
 
 
-    //DELETE Supprimer un cours {/api/courses/{idCourse}}
+    //ADMIN DELETE Supprimer un cours {/api/courses/{idCourse}}
     @DeleteMapping("/courses/{idCourse}")
     public ResponseEntity<Map<String, Object>> deleteCourseById(@PathVariable(name = "idCourse", required = true) Integer idCourse) {
 
@@ -141,7 +155,7 @@ public class CourseController {
         return responseEntity;
     }
 
-    //PUT Modifier un cours {/api/courses/{idCourse}} OK
+    //ADMIN PUT Modifier un cours {/api/courses/{idCourse}} OK
     @PutMapping("/courses/{idCourse}")
     public ResponseEntity<Map<String, Object>> updatedCourse(@Valid @RequestBody Course course,
                     BindingResult validationResults, @PathVariable(name = "idCourse", required = true) Integer idCourse) {
@@ -206,10 +220,70 @@ public class CourseController {
   
 
     
-    // GET Retrieved all students of a specific course Rosa
+    //ATTENDEE GET An attendee can list all available classes for future dates {students/{globalid}/courses}
+    //Only classes that are relevant to this student
 
-    //GET ATTENDEE An attendee can list all available classes for future dates {students/{globalid}/courses}
-    //Only classes that are relevant to this student ? based on his level?
+    //Cours sorted by dates 
+    // @GetMapping("/students/{globalId}/courses")
+    // public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
+    //     @PathVariable(name = "globalId", required = true) String globalId) {
+        
+
+    //     Map<String, Object> responseAsMap = new HashMap<>();
+    //     ResponseEntity<Map<String, Object>> responseEntity = null;
+    //     Sort sortByDate = Sort.by("date");
+
+
+    // try {
+    //     Student student = studentService.findStudentByGlobalId(globalId);
+    //     //Si l'étudiant existe je cherche les cours 
+    //     if (student != null) {
+    //         //Cours existants par dates
+    //         List<Course>existingCourses = courseService.findAllCoursesSorted(sortByDate);
+
+    //         //Je filtre les cours existants pour ne montrer que ceux à une future date
+    //         List<Course> courses = existingCourses.stream()
+    //         .filter(c -> courseService.isCourseinFuture(c) == true ) 
+    //         .collect(Collectors.toList());
+
+    //         List<Map<String, Object>> finalCourses = new ArrayList<>();
+
+    //         for (Course course : courses) {
+    //             Map<String, Object> courseDisplay = new HashMap<>(); // Create a new map for each course
+            
+    //             courseDisplay.put("title", course.getTitle());
+    //             courseDisplay.put("Date", course.getDate());
+    //             courseDisplay.put("Time", course.getTime());
+    //             courseDisplay.put("Mode", course.getMode());
+    //             courseDisplay.put("Place", course.getPlace());
+    //             courseDisplay.put("Language", course.getLanguage());
+    //             courseDisplay.put("Level", course.getLevel());
+            
+    //             finalCourses.add(courseDisplay);
+    //         }
+
+    //         String successMessage = "Student with globalId: " + globalId + " found.";
+    //                 responseAsMap.put("successMessage", successMessage);
+    //                 responseAsMap.put("List courses", finalCourses);
+    //                 responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
+    //     } else {
+    //         String errorMessage = "The student with globalId:" + globalId + "is not found, please ask for registration.";
+    //         responseAsMap.put("errorMessage", errorMessage);
+    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
+    //     }
+
+        
+    // } catch (DataException e) {
+    //     String error = "Error when trying to update course and the most common cause "
+    //                         + e.getMostSpecificCause();   
+    //         responseAsMap.put("Error", error);
+    //         responseAsMap.put("Course tried to be updated ", error);
+    //         responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+    // }
+        
+
+    //     return responseEntity;
+    // }
 
     
 

@@ -68,8 +68,7 @@ public class Student implements Serializable {
     private LEVEL initialLevel;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
+            CascadeType.ALL
     }, mappedBy = "students")
     @JsonIgnore
     private Set<Course> courses;

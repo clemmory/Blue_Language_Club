@@ -91,7 +91,7 @@ public class LoadSampleData {
             
             courseService.saveCourse(Course.builder()
                 .title("Français - niveau B")
-                .date(LocalDate.of(2024, Month.JANUARY, 17))
+                .date(LocalDate.of(2024, Month.JULY, 17))
                 .time(LocalTime.of(11, 30))
                 .mode(MODE.ONSITE)
                 .place("Salle B.3")

@@ -36,7 +36,7 @@ public class StudentController {
     // POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
     @Transactional
-    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student,BindingResult validationResults) {
+    public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student, BindingResult validationResults) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -195,5 +195,6 @@ public class StudentController {
 
         return responseEntity;
     }
+
 
 }

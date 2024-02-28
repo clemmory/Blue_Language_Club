@@ -2,10 +2,8 @@ package com.blueLanguageClub.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
@@ -24,7 +22,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraintvalidation.ValidationTarget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,8 +76,7 @@ public class Course implements Serializable {
 
     // Ajouter la relation MANY to MANY avec users
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
+            CascadeType.ALL,
     })
     @JoinTable(name = "students_courses", joinColumns = { 
         @JoinColumn(name = "course_id", referencedColumnName = "id") }, inverseJoinColumns = {
