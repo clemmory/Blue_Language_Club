@@ -1,18 +1,18 @@
 package com.blueLanguageClub.controllers;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -52,8 +52,6 @@ public class CourseController {
         return new ResponseEntity<>(courses, HttpStatus.OK);
 
     }
-
-    // Enregistrer un cours - OK
 
     //ADMIN - Enregistrer un cours - OK
     @PostMapping("/courses")
@@ -253,6 +251,47 @@ public class CourseController {
     }
         
         return responseEntity;
+    }
+
+    //ADMIN GET all courses available
+    @GetMapping("/courses/available")
+    public ResponseEntity<Map<String, Object>>getAvailableCoursesForFutureDates() {
+
+
+    Map<String,Object> responseAsMap = new HashMap<>();
+    ResponseEntity<Map<String,Object>> responseEntity = null;
+  
+    try {
+        //Récupérer les cours existants
+        List<Course> existingCourses = courseService.findAllCourses();
+
+        if (!existingCourses.isEmpty()) {
+            //Filtrer les cours seulement à une date future
+            List<Course> availableCourses = existingCourses.stream()
+                    .filter(course -> courseService.isCourseInFuture(course))
+                    .collect(Collectors.toList());
+
+            List<CourseAdminDto> dtos = new ArrayList<>();
+            ModelMapper modelMapper = new ModelMapper();
+                for(Course course : availableCourses){
+                    dtos.add(modelMapper.map(course, CourseAdminDto.class));
+                } 
+            responseAsMap.put("Available courses", availableCourses);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
+
+        } else {
+            //Si il n' a aucun cours disponible
+            String error = "There are no courses available, please add course.";
+            responseAsMap.put("Error diplaying courses", error);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+        }
+        } catch (DataAccessException e) {
+            String errorMessage = "Failed request" + e.getMostSpecificCause();
+            responseAsMap.put("errorMessage", errorMessage);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+
     }
 
     
