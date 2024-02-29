@@ -49,7 +49,6 @@ import lombok.RequiredArgsConstructor;
     public boolean existsById(Integer courseId) {
       return courseDao.existsById(courseId);
     }
-    
 
 
     @Override
