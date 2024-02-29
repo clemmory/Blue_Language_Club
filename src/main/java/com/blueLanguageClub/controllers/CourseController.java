@@ -260,23 +260,25 @@ public class CourseController {
 
     Map<String,Object> responseAsMap = new HashMap<>();
     ResponseEntity<Map<String,Object>> responseEntity = null;
+    Sort sortByDate = Sort.by("date");
   
     try {
         //Récupérer les cours existants
-        List<Course> existingCourses = courseService.findAllCourses();
+        List<Course> existingCourses = courseService.findAllCoursesSorted(sortByDate);
 
         if (!existingCourses.isEmpty()) {
             //Filtrer les cours seulement à une date future
             List<Course> availableCourses = existingCourses.stream()
                     .filter(course -> courseService.isCourseInFuture(course))
                     .collect(Collectors.toList());
-
+        
             List<CourseAdminDto> dtos = new ArrayList<>();
             ModelMapper modelMapper = new ModelMapper();
+
                 for(Course course : availableCourses){
                     dtos.add(modelMapper.map(course, CourseAdminDto.class));
                 } 
-            responseAsMap.put("Available courses", availableCourses);
+            responseAsMap.put("List of available courses", dtos);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
 
         } else {
