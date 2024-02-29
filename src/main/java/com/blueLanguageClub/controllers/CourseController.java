@@ -253,7 +253,7 @@ public class CourseController {
         return responseEntity;
     }
 
-    //ADMIN GET all courses available
+    //ADMIN GET Récuérer tous les cours disponibles à une date postérieure
     @GetMapping("/courses/available")
     public ResponseEntity<Map<String, Object>>getAvailableCoursesForFutureDates() {
 
@@ -261,6 +261,7 @@ public class CourseController {
     Map<String,Object> responseAsMap = new HashMap<>();
     ResponseEntity<Map<String,Object>> responseEntity = null;
     Sort sortByDate = Sort.by("date");
+
   
     try {
         //Récupérer les cours existants
@@ -282,7 +283,7 @@ public class CourseController {
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
 
         } else {
-            //Si il n' a aucun cours disponible
+            //Si il n'y a aucun cours disponible
             String error = "There are no courses available, please add course.";
             responseAsMap.put("Error diplaying courses", error);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND);
