@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -276,9 +277,12 @@ public class CourseController {
             List<CourseAdminDto> dtos = new ArrayList<>();
             ModelMapper modelMapper = new ModelMapper();
 
+            TypeMap<Course, CourseAdminDto> typeMap = modelMapper.createTypeMap(Course.class, CourseAdminDto.class);
                 for(Course course : availableCourses){
                     dtos.add(modelMapper.map(course, CourseAdminDto.class));
+                    typeMap.addMapping(source -> courseService.calculateNumStudents(course), CourseAdminDto::setRegisteredStudents);
                 } 
+
             responseAsMap.put("List of available courses", dtos);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.OK);
 
