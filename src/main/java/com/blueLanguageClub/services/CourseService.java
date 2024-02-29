@@ -1,5 +1,6 @@
 package com.blueLanguageClub.services;
 
+
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -8,7 +9,8 @@ import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.LANGUAGE;
 
 public interface CourseService {
-
+   
+   
     // Créer un cours
     public Course saveCourse (Course course);
 

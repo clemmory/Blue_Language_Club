@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -25,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blueLanguageClub.dto.CourseStudentDto;
+import com.blueLanguageClub.dto.CourseAdminDto;
 import com.blueLanguageClub.entities.Course;
-import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
@@ -42,7 +44,16 @@ public class CourseController {
     private final CourseService courseService;
     private final StudentService studentService;
 
+    // Affficher tous les cours - OK
+    @GetMapping("/courses")
+    public ResponseEntity<List<Course>> findAllCourses() {
 
+        List<Course> courses = courseService.findAllCourses();
+        return new ResponseEntity<>(courses, HttpStatus.OK);
+
+    }
+
+    // Enregistrer un cours - OK
 
     //ADMIN - Enregistrer un cours - OK
     @PostMapping("/courses")
@@ -94,7 +105,8 @@ public class CourseController {
 
     //ADMIN DELETE Supprimer un cours {/api/courses/{idCourse}}
     @DeleteMapping("/courses/{idCourse}")
-    public ResponseEntity<Map<String, Object>> deleteCourseById(@PathVariable(name = "idCourse", required = true) Integer idCourse) {
+    public ResponseEntity<Map<String, Object>> deleteCourseById(
+            @PathVariable(name = "idCourse", required = true) Integer idCourse) {
 
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
@@ -111,16 +123,17 @@ public class CourseController {
                     String successMessage = "The course with id " + idCourse + " has been deleted.";
                     responseAsMap.put("successMessage", successMessage);
                     responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
-                }              
+                }
             } else {
                 String errorMessage = "Course with id : " + idCourse + " not found";
                 responseAsMap.put("errorMessage", errorMessage);
                 responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.NOT_FOUND);
             }
         } catch (DataAccessException e) {
-            String seriousError = "An error occurred while deleting the course with id " + idCourse + ", and the most probable cause is " + e.getMostSpecificCause();
+            String seriousError = "An error occurred while deleting the course with id " + idCourse
+                    + ", and the most probable cause is " + e.getMostSpecificCause();
             responseAsMap.put("seriousError", seriousError);
-            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return responseEntity;
@@ -129,25 +142,26 @@ public class CourseController {
     //ADMIN PUT Modifier un cours {/api/courses/{idCourse}} OK
     @PutMapping("/courses/{idCourse}")
     public ResponseEntity<Map<String, Object>> updatedCourse(@Valid @RequestBody Course course,
-                    BindingResult validationResults, @PathVariable(name = "idCourse", required = true) Integer idCourse) {
- 
+            BindingResult validationResults, @PathVariable(name = "idCourse", required = true) Integer idCourse) {
+
         Map<String, Object> responseAsMap = new HashMap<>();
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         // Vérifier si les données apportées sont conformes
         if (validationResults.hasErrors()) {
-            List<String> errores =  new ArrayList<>();
+            List<String> errores = new ArrayList<>();
             List<ObjectError> objectErrors = validationResults.getAllErrors();
-            objectErrors.forEach(objectError ->
-                errores.add(objectError.getDefaultMessage()));
- 
+            objectErrors.forEach(objectError -> errores.add(objectError.getDefaultMessage()));
+
             responseAsMap.put("errors", errores);
             responseAsMap.put("Not built course", course);
- 
-            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
- 
+
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.BAD_REQUEST);
+
             return responseEntity;
         }
+
+        // S'il ya pas des erreurs dans le cours,on modifie le curs
        
         try {
             Course updatedCourse = courseService.findByIdCourse(idCourse);
@@ -174,16 +188,16 @@ public class CourseController {
             } else {
                 String errorMessage = "The course with Id:" +idCourse + "is not found";
                 responseAsMap.put("errorMessage", errorMessage);
-                responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND); 
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
             }
         } catch (DataAccessException e) {
             String error = "Error when trying to update course and the most common cause "
-                            + e.getMostSpecificCause();   
+                    + e.getMostSpecificCause();
             responseAsMap.put("Error", error);
             responseAsMap.put("Course tried to be updated ", course);
-            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-       
+
         return responseEntity;
     }
   

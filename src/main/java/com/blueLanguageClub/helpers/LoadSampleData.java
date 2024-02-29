@@ -79,7 +79,7 @@ public class LoadSampleData {
 
             courseService.saveCourse(Course.builder()
                 .title("English - Level B")
-                .date(LocalDate.of(2024, Month.MARCH, 22))
+                .date(LocalDate.of(2023, Month.MARCH, 22))
                 .time(LocalTime.of(10, 30))
                 .mode(MODE.ONLINE)
                 .place("Teams")
@@ -99,6 +99,8 @@ public class LoadSampleData {
                 .level(LEVEL.A)
                 .max_students(8)
                 .build());
+
+            
 
 
             student1.setCourses(Set.of(courseService.findByIdCourse(1)));
