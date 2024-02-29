@@ -3,6 +3,7 @@ package com.blueLanguageClub.services;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.blueLanguageClub.dao.CourseDao;
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.LANGUAGE;
+import com.blueLanguageClub.entities.Student;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,6 +66,23 @@ import lombok.RequiredArgsConstructor;
     @Override
     public boolean isCourseInFuture(Course course) {
       return (course.getDate().isEqual(LocalDate.now()) && course.getTime().isAfter(LocalTime.now()) || course.getDate().isAfter(LocalDate.now())) ? true : false;   
+    }
+
+    @Override
+    public int calculateNumStudents(Course course) {
+     
+      int max_students = course.getMax_students();
+      int registeredStudents = 0;
+      Set<Student> listStudents = course.getStudents();
+          if(listStudents != null) {
+              registeredStudents = listStudents.size();
+            }
+      
+      //int result = max_students-registeredStudents;
+
+     
+      return registeredStudents;
+
     }
   
  }

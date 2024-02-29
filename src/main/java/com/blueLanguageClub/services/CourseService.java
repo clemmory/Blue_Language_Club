@@ -32,5 +32,7 @@ public interface CourseService {
     public List<Course> findAllCoursesSorted(Sort sort);
 
     public boolean isCourseInFuture(Course course);
+
+    public int calculateNumStudents(Course course);
     
 }
