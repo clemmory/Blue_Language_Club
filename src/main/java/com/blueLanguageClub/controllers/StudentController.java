@@ -243,7 +243,7 @@ public class StudentController {
     }
 
 
-    // GET Récupérer tous les courses futures d'un étudiant
+    // GET Récupérer tous les cours futurs d'un étudiant
     @GetMapping("/students/{globalId}/courses")
     public ResponseEntity<Map<String, Object>> getCoursesByStudentGlobalId(@PathVariable(name = "globalId", required = true) String globalId) {
 
