@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blueLanguageClub.dto.CourseStudentDto;
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.Student;
-import com.blueLanguageClub.entities.Student;
 import com.blueLanguageClub.services.CourseService;
 import com.blueLanguageClub.services.StudentService;
 

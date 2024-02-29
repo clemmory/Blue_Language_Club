@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blueLanguageClub.dto.CourseStudentDto;
 import com.blueLanguageClub.dto.StudentDto;
 import com.blueLanguageClub.entities.Course;
 import com.blueLanguageClub.entities.Student;
@@ -231,7 +232,7 @@ public class StudentController {
                 responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
              }
             
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             String errorGrave = "Error found for students by course with id : " + courseId;
             responseAsMap.put("Serious error" , errorGrave);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -240,5 +241,46 @@ public class StudentController {
         return responseEntity;
 
     }
+
+
+    // GET Récupérer tous les courses futures d'un étudiant
+    @GetMapping("/students/{globalId}/courses")
+    public ResponseEntity<Map<String, Object>> getCoursesByStudentGlobalId(@PathVariable(name = "globalId", required = true) String globalId) {
+
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        try {
+            // Vérifier si globlaId existe
+            Student globalIdStudent = studentService.findStudentByGlobalId(globalId);
+
+            if(globalIdStudent !=null) {
+                Set<Course> coursesByStudent = globalIdStudent.getCourses();
+
+                List<CourseStudentDto> dtos = new ArrayList<>();
+                ModelMapper modelMapper = new ModelMapper();
+
+                for (Course course : coursesByStudent) {
+                    dtos.add(modelMapper.map(course, CourseStudentDto.class));
+                }
+
+                responseAsMap.put ("List found", dtos);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.OK);
+                
+            } else {
+                String errorMessage = ("This globalId does not exist");
+                responseAsMap.put("Error message", errorMessage);
+                responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.NOT_FOUND);
+            }
+            
+        } catch (DataAccessException e) {
+            String errorGrave = "Failed request " + e.getMostSpecificCause();
+            responseAsMap.put("Serious error" , errorGrave);
+            responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+    
 
 }
