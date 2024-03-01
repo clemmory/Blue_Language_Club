@@ -1,8 +1,5 @@
 package com.blueLanguageClub.controllers;
 
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,8 +108,9 @@ public class CourseController {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            Course course = courseService.findByIdCourse(idCourse);
-            if (course != null) {
+            if (courseService.existsById(idCourse)) {
+                Course course = courseService.findByIdCourse(idCourse);
+
                 if (!courseService.isCourseInFuture(course)) {
                     String errorMessage = "You can't delete this course because it has already ended";
                     responseAsMap.put("errorMessage", errorMessage);
@@ -160,12 +158,14 @@ public class CourseController {
             return responseEntity;
         }
 
-        // S'il ya pas des erreurs dans le cours,on modifie le curs
+        // S'il ya pas des erreurs dans le cours,on modifie le cours
        
         try {
-            Course updatedCourse = courseService.findByIdCourse(idCourse);
             //Vérifier si le cours  à modifier existe
-            if(updatedCourse != null) {
+            if(courseService.existsById(idCourse)){
+
+                Course updatedCourse = courseService.findByIdCourse(idCourse);
+
                 //Vérification que l'heure ne soit pas passée si la date est celle du jour
                 if (!courseService.isCourseInFuture(course)) {
                     String errorMessage = "You can't update this course with an anterior date";
@@ -216,9 +216,10 @@ public class CourseController {
 
 
     try {
-        Student student = studentService.findStudentByGlobalId(globalId);
+
         //Si l'étudiant existe je cherche les cours 
-        if (student != null) {
+        if (studentService.existsByGlobalId(globalId)) {
+
             //Cours existants par dates
             List<Course>existingCourses = courseService.findAllCoursesSorted(sortByDate);
 
@@ -254,7 +255,7 @@ public class CourseController {
         return responseEntity;
     }
 
-    //ADMIN GET Récuérer tous les cours disponibles à une date postérieure
+    //ADMIN GET Récupérer tous les cours disponibles à une date postérieure
     @GetMapping("/courses/available")
     public ResponseEntity<Map<String, Object>>getAvailableCoursesForFutureDates() {
 
@@ -288,13 +289,13 @@ public class CourseController {
 
         } else {
             //Si il n'y a aucun cours disponible
-            String error = "There are no courses available, please add course.";
+            String error = "There are no courses available, please add a course.";
             responseAsMap.put("Error diplaying courses", error);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.NOT_FOUND);
         }
         } catch (DataAccessException e) {
             String errorMessage = "Failed request" + e.getMostSpecificCause();
-            responseAsMap.put("errorMessage", errorMessage);
+            responseAsMap.put("ErrorMessage", errorMessage);
             responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
