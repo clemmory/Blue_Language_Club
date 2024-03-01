@@ -70,8 +70,6 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public int calculateNumStudents(Course course) {
-     
-      int max_students = course.getMax_students();
       int registeredStudents = 0;
       Set<Student> listStudents = course.getStudents();
           if(listStudents != null) {
@@ -82,6 +80,17 @@ import lombok.RequiredArgsConstructor;
 
      
       return registeredStudents;
+
+    }
+
+    @Override
+    public boolean isComplete(Course course) {
+      int registeredStudents = 0;
+      Set<Student> listStudents = course.getStudents();
+          if(listStudents != null) {
+              registeredStudents = listStudents.size();
+            }
+      return (registeredStudents == course.getMax_students() ? true : false);
 
     }
   

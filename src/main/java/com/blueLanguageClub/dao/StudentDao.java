@@ -18,5 +18,7 @@ public interface StudentDao extends JpaRepository<Student, Integer> {
 
     List<Student> findStudentsByCoursesId(int courseId);
 
+    boolean existsByGlobalId(String globalId);
+
 
 }

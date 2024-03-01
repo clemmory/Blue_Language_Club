@@ -17,7 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -46,7 +45,6 @@ public class Course implements Serializable {
     private String title;
 
     @NotNull(message = "Please indicate the course date")
-    // @FutureOrPresent(message = "The indicated date is not valid")
     @DateTimeFormat(pattern = "dd-MM-yyyy")//En el pdf DD-MM-YYYY
     private LocalDate date;
 

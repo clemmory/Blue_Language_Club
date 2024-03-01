@@ -51,6 +51,11 @@ public class StudentServiceImpl implements StudentService {
         return studentDao.findStudentsByCoursesId(courseId);
     }
 
+    @Override
+    public boolean existsByGlobalId(String globalId) {
+        return studentDao.existsByGlobalId(globalId);
+    }
+
   
 
 }

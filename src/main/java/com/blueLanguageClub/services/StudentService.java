@@ -27,5 +27,8 @@ public interface StudentService {
     //Récupérer tous les étudiants d'un cours
     public List<Student> findStudentsByCoursesId(int courseId);
 
+    //Vérifier si un étudiant existe grâce à son global Id
+    public boolean existsByGlobalId (String globalId);
+
 
 }

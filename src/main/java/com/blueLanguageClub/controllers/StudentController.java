@@ -40,7 +40,7 @@ public class StudentController {
     private final StudentService studentService;
     private final CourseService courseService;
 
-    // POST - Enregistrer un étudiant {/api/students}
+    // ADMIN POST - Enregistrer un étudiant {/api/students}
     @PostMapping("/students")
     @Transactional
     public ResponseEntity<Map<String, Object>> saveStudent(@Valid @RequestBody Student student, BindingResult validationResults) {
@@ -100,8 +100,8 @@ public class StudentController {
 
         try {
             // Vérifier si le globalId existe pour un étudiant donné
-            Student student = studentService.findStudentByGlobalId(globalId);
-            if (student != null) {
+            if (studentService.existsByGlobalId(globalId)) {
+                Student student = studentService.findStudentByGlobalId(globalId);
                 String successMessage = "Student found with global id : " + globalId;
                 responseAsMap.put("Sucess message: ", successMessage);
                 responseAsMap.put("Student found: ", student);
@@ -121,7 +121,7 @@ public class StudentController {
         return responseEntity;
     }
 
-    // PUT Modifier un étudiant en utilisant son global_id {/api/students/{globalId}} - OK
+    // ADMIN PUT Modifier un étudiant en utilisant son global_id {/api/students/{globalId}} 
     @PutMapping("/students/{globalId}")
     public ResponseEntity<Map<String, Object>> updateStudentByGlobalId(
             @PathVariable(value = "globalId", required = true) String globalId,
@@ -145,8 +145,11 @@ public class StudentController {
             return responseEntity;
         }
         try {
-            Student savedStudent = studentService.findStudentByGlobalId(globalId);
-            if (savedStudent != null){
+            //Vérifier si l'étudiant existe
+            if (studentService.existsByGlobalId(globalId)){
+
+                Student savedStudent = studentService.findStudentByGlobalId(globalId);
+
                 savedStudent.setFirstName(student.getFirstName());
                 savedStudent.setSurname(student.getSurname());
                 savedStudent.setEmail(student.getEmail());
@@ -180,8 +183,9 @@ public class StudentController {
         ResponseEntity<Map<String, Object>> responseEntity = null;    
         try {
             // Vérifier si le globalId existe pour un étudiant donné
-            Student student = studentService.findStudentByGlobalId(globalId);
-            if (student != null) {
+            if (studentService.existsByGlobalId(globalId)) {
+                Student student = studentService.findStudentByGlobalId(globalId);
+
                 // Si l'étudiant existe, le supprimer
                 studentService.deleteStudentByGlobalId(globalId);
                 String successMessage = "Student with global id : " + globalId + "has been deleted";
@@ -252,9 +256,10 @@ public class StudentController {
 
         try {
             // Vérifier si globlaId existe
-            Student globalIdStudent = studentService.findStudentByGlobalId(globalId);
 
-            if(globalIdStudent !=null) {
+            if(studentService.existsByGlobalId(globalId)) {
+                Student globalIdStudent = studentService.findStudentByGlobalId(globalId);
+
                 Set<Course> coursesByStudent = globalIdStudent.getCourses();
 
                 List<CourseStudentDto> dtos = new ArrayList<>();
@@ -281,6 +286,87 @@ public class StudentController {
 
         return responseEntity;
     }
+
+    //ATTENDEE POST s'inscrire à un cours {"/api/courses/{id}/students/{globalId}"}
+    @PostMapping("/courses/{courseId}/students/{globalId}")
+    public ResponseEntity<Map<String, Object>> resgisterToCourse(
+        @PathVariable(name = "courseId", required = true) Integer courseId,
+        @PathVariable(name = "globalId", required = true) String globalId){
+
+        Map<String, Object> responseAsMap = new HashMap<>();
+        ResponseEntity<Map<String, Object>> responseEntity = null;
+
+        try {           
+
+            //Vérifier si l'étudiant et le cours sélectionné existent
+            if(studentService.existsByGlobalId(globalId) && courseService.existsById(courseId)){
+                Course selectedCourse = courseService.findByIdCourse(courseId);
+                Student student = studentService.findStudentByGlobalId(globalId);
+
+                //Si vérifier si la date est ok 
+                if(courseService.isCourseInFuture(selectedCourse)){
+                    Set<Course> coursesStudent = student.getCourses();
+
+                    //Récupérer les dates des cours auquels l'étudiant est déjà inscrit
+                    if(coursesStudent != null){
+                        Boolean validDate = null;
+                        for (Course course : coursesStudent){
+                            validDate = course.getDate().isEqual(selectedCourse.getDate());
+
+                            if(validDate){
+                                // Erreur si l'étudiant est déjà inscrit à un cours ce jour là.
+                                String error = "You are already registered to a course on that date, please select a course at a different date.";
+                                responseAsMap.put("Error message", error);
+                                return new ResponseEntity<>(responseAsMap,HttpStatus.BAD_REQUEST);                          
+                            }
+                        }
+                    }
+                    //Si Ok vérifier que la classe n'est pas complète si non message erreur
+                    if(courseService.isComplete(selectedCourse)){
+                        // Erreur si le cours est déjà complet
+                        String error = "The selected course is already full.";
+                        responseAsMap.put("Error message", error);
+                        return new ResponseEntity<>(responseAsMap,HttpStatus.BAD_REQUEST);
+                    }
+
+                    //Ajouter étudiant au cours si tout est vérifié
+                    selectedCourse.addStudent(student);
+                    courseService.saveCourse(selectedCourse);
+                    String successMessage = "The student with global id: " + globalId + "has been registered to the course with id: " + courseId;
+                    responseAsMap.put("Success message", successMessage);
+                    responseAsMap.put("Student details", student);
+                    responseAsMap.put("Selected course", selectedCourse);
+                    responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.ACCEPTED);
+
+                } else {
+                // Erreur si la date du cours est déja passée
+                String error = "Cannot registered to a class at an earlier date/timing";
+                responseAsMap.put("Error message", error);
+                responseEntity = new ResponseEntity<>(responseAsMap,HttpStatus.BAD_REQUEST);
+                }
+            }else{
+                // Erreur si le global Id ou le cours id sont invalides
+                String error = "Invalid global Id or the course selected doesn't exists";
+                responseAsMap.put("Error message", error);
+                responseEntity = new ResponseEntity<>(responseAsMap,HttpStatus.NOT_FOUND);
+            }
+        } catch (DataAccessException e) {
+            String errorGrave = "Failed request " + e.getMostSpecificCause();
+            responseAsMap.put("Serious error" , errorGrave);
+            responseEntity = new ResponseEntity<Map<String,Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+            return responseEntity;
+        }
+
+
+
+
+
+
+
+
+
+    
     
 
 }
