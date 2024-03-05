@@ -28,34 +28,26 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/api/students/{globalId}/mycourses**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/students/{globalId}/courses**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/students**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.GET, "/api/students**").hasAuthority("ADMIN");
                     auth.requestMatchers("/users/**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/productos/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT, "/productos/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/productos/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/courses/{courseId}/students/{globalId}**").hasAnyAuthority("ADMIN","USER");
+                    auth.requestMatchers(HttpMethod.GET, "/api/students/{globalId}/mycourses**").hasAnyAuthority("ADMIN","USER");
+                    auth.requestMatchers(HttpMethod.GET, "/api/students/{globalId}/courses**").hasAnyAuthority("ADMIN","USER");
+                    auth.requestMatchers(HttpMethod.GET, "/api/courses**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/students**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/courses/available**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/students/{globalId}**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/courses/{courseId}/students**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/courses**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/students**").hasAuthority("ADMIN"); 
+                    auth.requestMatchers(HttpMethod.PUT, "/api/courses/{idCourse}/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/students/{globalId}/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/courses/{idCourse}**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/students/{globalId}**").hasAuthority("ADMIN");
                     auth.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults()).build();
 
 
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/students/{globalId}/mycourses").hasAnyAuthority("USER", "ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/students/{globalId}/courses").hasAnyAuthority("USER", "ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/students").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/students").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/students").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/courses/available").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/students/{globalId}").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/courses/{coursesId}/students").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/courses").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/students").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/courses/{idCourse}").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/students/{globalId}").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/courses/{idCourse}").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/students/{globalId}").hasAuthority("ADMIN")
-
+               
         // return http.csrf().disable()
         //     .authorizeHttpRequests()
         //     .requestMatchers(HttpMethod.GET, "/productos/**").permitAll()
