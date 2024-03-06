@@ -47,11 +47,6 @@ import lombok.RequiredArgsConstructor;
       courseDao.deleteById(id);
     }
 
-    @Override
-    public boolean existsById(Integer courseId) {
-      return courseDao.existsById(courseId);
-    }
-
 
     @Override
     public List<Course> findCoursesByLanguage(LANGUAGE language) {
@@ -69,6 +64,11 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
+    public boolean existsById(Integer courseId) {
+      return courseDao.existsById(courseId);
+    }
+
+    @Override
     public int calculateNumStudents(Course course) {
      
       int max_students = course.getMax_students();
@@ -78,9 +78,6 @@ import lombok.RequiredArgsConstructor;
               registeredStudents = listStudents.size();
             }
       
-      //int result = max_students-registeredStudents;
-
-     
       return registeredStudents;
 
     }

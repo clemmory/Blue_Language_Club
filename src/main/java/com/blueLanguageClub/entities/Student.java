@@ -51,11 +51,11 @@ public class Student implements Serializable {
     private String surname;
 
     @Column(name = "global_id")
-    private  String globalId;
-    
+    private String globalId;
+
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@blueclub.com")
     @Email
-    @NotBlank(message= "Please verify you have entered a correct email address.")
+    @NotBlank(message = "Please verify you have entered a correct email address.")
     private String email;
 
     @Enumerated
@@ -73,8 +73,8 @@ public class Student implements Serializable {
     @JsonIgnore
     private Set<Course> courses;
 
-    //Générer globalId
-    public String generateGlobalId(){
+    // Générer globalId
+    public String generateGlobalId() {
         int randomId = new Random().nextInt((10000000));
         this.globalId = String.format("%08d", randomId);
         return this.globalId;
@@ -86,7 +86,5 @@ public class Student implements Serializable {
             generateGlobalId();
         }
     }
-    
 
 }
-

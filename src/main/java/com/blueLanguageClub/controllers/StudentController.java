@@ -114,7 +114,7 @@ public class StudentController {
             }
         } catch (DataAccessException e) {
             String errorGrave = "Error found for student with globalId : " + globalId;
-            responseAsMap.put("Serious errorđ ", errorGrave);
+            responseAsMap.put("Serious error ", errorGrave);
             responseEntity = new ResponseEntity<Map<String, Object>>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

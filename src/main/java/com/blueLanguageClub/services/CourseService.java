@@ -23,16 +23,19 @@ public interface CourseService {
     //Afficher un cours par Id
     public Course findByIdCourse(int id);
 
+    //Supprimer un cours grâce a son id 
     public void deleteById(int id);
-
-    public boolean existsById(Integer courseId);
     
+    //Récupérer tous les courses par langue
     public List<Course> findCoursesByLanguage(LANGUAGE language);
 
+    ////Récupérer tous les courses classifiés
     public List<Course> findAllCoursesSorted(Sort sort);
 
     public boolean isCourseInFuture(Course course);
 
     public int calculateNumStudents(Course course);
+
+    public boolean existsById(Integer courseId);
     
 }

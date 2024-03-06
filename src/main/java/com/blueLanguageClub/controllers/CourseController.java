@@ -199,13 +199,11 @@ public class CourseController {
 
         return responseEntity;
     }
-  
-
     
     //ATTENDEE GET An attendee can list all available classes for future dates {students/{globalid}/courses}
 
     //Cours sorted by dates 
-    @GetMapping("/students/{globalId}/coursesByCourses")
+    @GetMapping("/students/{globalId}/mycourses")
     public ResponseEntity<Map<String, Object>> findAllCoursesforStudents(
         @PathVariable(name = "globalId", required = true) String globalId) {
         
