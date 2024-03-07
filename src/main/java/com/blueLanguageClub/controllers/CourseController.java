@@ -62,6 +62,7 @@ public class CourseController {
 
 
         // Vérifier si le cours à enregistrer comporte des erreurs
+
         if (validationResults.hasErrors()) {
             List<String> errorsList = new ArrayList<>();
 

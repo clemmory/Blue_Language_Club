@@ -45,7 +45,7 @@ public class Course implements Serializable {
     private String title;
 
     @NotNull(message = "Please indicate the course date")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")//En el pdf DD-MM-YYYY
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @NotNull(message = "Please indicate the course time")
@@ -74,7 +74,7 @@ public class Course implements Serializable {
 
     // Ajouter la relation MANY to MANY avec users
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.ALL,
+            CascadeType.PERSIST, CascadeType.MERGE
     })
     @JoinTable(name = "students_courses", joinColumns = { 
         @JoinColumn(name = "course_id", referencedColumnName = "id") }, inverseJoinColumns = {
