@@ -155,6 +155,7 @@ public class StudentController {
                 savedStudent.setEmail(student.getEmail());
                 savedStudent.setLanguage(student.getLanguage());
                 savedStudent.setInitialLevel(student.getInitialLevel());
+                studentService.saveStudent(savedStudent);
                 String successMessage = "The student with globalId: " + globalId + " has been modified successfully.";
                 responseAsMap.put("Sucess Message", successMessage);
                 responseAsMap.put("Saved student", savedStudent);
